@@ -80,16 +80,5 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
             <i class="fas fa-file-invoice"></i>
             Laporan Keluar
         </a>
-        
-        <!-- Divider -->
-        <hr class="border-white border-opacity-10 my-2">
-        
-        <!-- Logout -->
-        <a href="/inventaris/auth/logout.php" 
-           class="nav-link" 
-           onclick="return confirm('Yakin ingin logout?')">
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
-        </a>
     </nav>
 </div>
