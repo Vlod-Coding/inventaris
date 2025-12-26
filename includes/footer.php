@@ -1,3 +1,24 @@
+<!-- Logout Modal -->
+<div class="logout-modal-overlay" id="logoutModal">
+    <div class="logout-modal">
+        <div class="logout-modal-header">
+            <i class="fas fa-sign-out-alt"></i>
+            <h5>Konfirmasi Logout</h5>
+        </div>
+        <div class="logout-modal-body">
+            <p>Apakah Anda yakin ingin keluar dari sistem?</p>
+        </div>
+        <div class="logout-modal-footer">
+            <button class="btn btn-logout-cancel" onclick="hideLogoutModal()">
+                <i class="fas fa-times me-2"></i>Batal
+            </button>
+            <a href="/inventaris/auth/logout.php" class="btn btn-logout-confirm">
+                <i class="fas fa-check me-2"></i>Ya, Logout
+            </a>
+        </div>
+    </div>
+</div>
+
 <!-- Footer -->
     <footer class="mt-5 py-4 text-center text-muted">
         <hr>
@@ -105,6 +126,34 @@
                 }
             });
         }
+        
+        // Logout Modal Functions
+        function showLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function hideLogoutModal() {
+            const modal = document.getElementById('logoutModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+        
+        // Close modal when clicking overlay
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('logoutModal');
+            if (e.target === modal) {
+                hideLogoutModal();
+            }
+        });
+        
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideLogoutModal();
+            }
+        });
         
         // Auto hide alert setelah 5 detik
         setTimeout(function() {

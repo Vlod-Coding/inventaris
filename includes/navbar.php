@@ -62,20 +62,20 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="/inventaris/profile/index.php">
                             <i class="fas fa-user me-2"></i>Profile
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="/inventaris/profile/settings.php">
                             <i class="fas fa-cog me-2"></i>Settings
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item text-danger" 
-                           href="/inventaris/auth/logout.php"
-                           onclick="return confirm('Yakin ingin logout?')">
+                           href="#"
+                           onclick="showLogoutModal(); return false;">
                             <i class="fas fa-sign-out-alt me-2"></i>Logout
                         </a>
                     </li>
