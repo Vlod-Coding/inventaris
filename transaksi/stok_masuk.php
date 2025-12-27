@@ -10,6 +10,10 @@
 session_start();
 require_once '../config/koneksi.php';
 require_once '../config/cek_session.php';
+require_once '../config/permissions.php';
+
+// Check if user can access this page (CS and Admin only)
+check_page_access('transaksi');
 
 // Set variabel untuk template
 $page_title = 'Stok Masuk';

@@ -22,8 +22,8 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
+            --primary-color: #1a1a1a;
+            --secondary-color: #2d2d2d;
             --sidebar-width: 250px;
             --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
@@ -34,7 +34,7 @@
         
         body {
             font-family: var(--font-family);
-            background-color: #f8f9fa;
+            background-color: #f5f5f5;
             font-weight: 400;
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased;
@@ -57,7 +57,7 @@
         
         /* Hamburger Menu Button - Navbar Integrated */
         .hamburger-btn-navbar {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             border: none;
             width: 45px;
             height: 45px;
@@ -69,12 +69,13 @@
             align-items: center;
             gap: 4px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .hamburger-btn-navbar:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
         }
         
         .hamburger-btn-navbar:active {
@@ -128,11 +129,12 @@
             left: 0;
             height: 100vh;
             width: var(--sidebar-width);
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
             color: white;
             transition: all 0.3s;
             z-index: 1000;
             overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
         }
         
         .sidebar .logo {
@@ -147,7 +149,7 @@
         }
         
         .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.7);
             padding: 15px 25px;
             transition: all 0.3s;
             border-left: 3px solid transparent;
@@ -184,7 +186,7 @@
         .top-navbar h5 {
             font-weight: 600;
             margin-bottom: 0;
-            color: #2d3748;
+            color: #1a1a1a;
         }
         
         /* Breadcrumb */
@@ -195,13 +197,13 @@
         }
         
         .breadcrumb-item a {
-            color: var(--primary-color);
+            color: #2d2d2d;
             text-decoration: none;
             font-weight: 500;
         }
         
         .breadcrumb-item a:hover {
-            color: var(--secondary-color);
+            color: #000000;
         }
         
         .breadcrumb-item.active {
@@ -225,8 +227,8 @@
         }
         
         .dropdown-item:hover {
-            background-color: rgba(102, 126, 234, 0.1);
-            color: var(--primary-color);
+            background-color: #f5f5f5;
+            color: #1a1a1a;
         }
         
         /* Form Inputs */
@@ -239,8 +241,8 @@
         }
         
         .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
         }
         
         .form-label {
@@ -264,7 +266,7 @@
         }
         
         .card-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
             color: white;
             border-radius: 12px 12px 0 0 !important;
             font-weight: 600;
@@ -284,10 +286,10 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
         
-        .stat-card.blue { border-left-color: #3498db; }
-        .stat-card.green { border-left-color: #2ecc71; }
-        .stat-card.orange { border-left-color: #e67e22; }
-        .stat-card.red { border-left-color: #e74c3c; }
+        .stat-card.blue { border-left-color: #2d2d2d; }
+        .stat-card.green { border-left-color: #4a4a4a; }
+        .stat-card.orange { border-left-color: #666666; }
+        .stat-card.red { border-left-color: #1a1a1a; }
         
         /* Buttons */
         .btn {
@@ -298,15 +300,16 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             border: none;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
         
         .btn-primary:hover {
-            opacity: 0.95;
+            background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
         .btn-sm {
@@ -315,19 +318,43 @@
         }
         
         .btn-info {
-            background: #17a2b8;
+            background: linear-gradient(135deg, #4a4a4a 0%, #5a5a5a 100%);
             border: none;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
         }
         
         .btn-warning {
-            background: #ffc107;
+            background: linear-gradient(135deg, #666666 0%, #777777 100%);
             border: none;
-            color: #000;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #4a4a4a 0%, #5a5a5a 100%);
         }
         
         .btn-danger {
-            background: #dc3545;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
             border: none;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         }
         
         /* Tables */
@@ -339,8 +366,9 @@
         .table thead th {
             font-weight: 600;
             letter-spacing: -0.01em;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid #e5e5e5;
             padding: 14px 12px;
+            background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%);
         }
         
         .table tbody td {
@@ -349,7 +377,7 @@
         }
         
         .table-hover tbody tr:hover {
-            background-color: rgba(102, 126, 234, 0.04);
+            background-color: #f5f5f5;
         }
         
         /* Badges */
@@ -398,7 +426,7 @@
         }
         
         .logout-modal-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: white;
             padding: 24px 30px;
             text-align: center;
@@ -446,15 +474,15 @@
         }
         
         .btn-logout-confirm {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
             color: white;
             border: none;
         }
         
         .btn-logout-confirm:hover {
-            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
         .btn-logout-cancel {

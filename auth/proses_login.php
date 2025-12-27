@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password_hash = md5($password);
     
     // Query untuk cek user di database
-    $query = "SELECT * FROM users 
+    $query = "SELECT id, username, nama_lengkap, password, role FROM users 
               WHERE username = '$username' 
               AND password = '$password_hash'
               LIMIT 1";
@@ -39,9 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['nama_lengkap'] = $user['nama_lengkap'];
+        $_SESSION['role'] = $user['role']; // Tambahkan role ke session
         
         // Catat waktu login
         $_SESSION['login_time'] = date('Y-m-d H:i:s');
+        
+        // Log successful login
+        log_activity($user['id'], $user['username'], 'LOGIN_SUCCESS', 'AUTH', 'User berhasil login');
         
         // Log activity
         log_activity($user['id'], $user['username'], 'LOGIN', 'AUTH', 'User berhasil login');

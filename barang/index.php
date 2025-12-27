@@ -10,6 +10,10 @@
 session_start();
 require_once '../config/koneksi.php';
 require_once '../config/cek_session.php';
+require_once '../config/permissions.php';
+
+// Check if user can access this page (CS and Admin only)
+check_page_access('barang');
 
 // Set variabel untuk template
 $page_title = 'Data Barang';
@@ -62,9 +66,11 @@ include '../includes/header.php';
                     <i class="fas fa-list me-2"></i>
                     Daftar Barang
                 </span>
+                <?php if (can_manage_barang()): ?>
                 <a href="tambah.php" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus me-2"></i>Tambah Barang
                 </a>
+                <?php endif; ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -125,6 +131,7 @@ include '../includes/header.php';
                                             <i class="fas fa-eye"></i>
                                         </button>
                                         
+                                        <?php if (can_manage_barang()): ?>
                                         <!-- Tombol Edit -->
                                         <a href="edit.php?id=<?= $row['id'] ?>" 
                                            class="btn btn-warning btn-sm"
@@ -134,11 +141,12 @@ include '../includes/header.php';
                                         
                                         <!-- Tombol Hapus -->
                                         <a href="javascript:void(0)" 
-                                           onclick="confirmDelete('hapus.php?id=<?= $row['id'] ?>', '<?= $row['nama_barang'] ?>')"
+                                           onclick="confirmDelete('hapus.php?id=<?= $row['id'] ?>', '<?= $row['nama_barang'] ?>')" 
                                            class="btn btn-danger btn-sm"
                                            title="Hapus">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endwhile; ?>
