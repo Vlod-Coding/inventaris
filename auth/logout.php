@@ -9,6 +9,20 @@
 
 session_start();
 
+require_once '../config/koneksi.php';
+require_once '../config/log_helper.php';
+
+// Log logout before destroying session
+if (isset($_SESSION['user_id']) && isset($_SESSION['username'])) {
+    log_activity(
+        $_SESSION['user_id'], 
+        $_SESSION['username'], 
+        'LOGOUT', 
+        'AUTH', 
+        'User logout dari sistem'
+    );
+}
+
 // Hapus semua session
 session_unset();
 

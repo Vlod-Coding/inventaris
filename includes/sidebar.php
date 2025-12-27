@@ -80,5 +80,15 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
             <i class="fas fa-file-invoice"></i>
             Laporan Keluar
         </a>
+        
+        <!-- Divider -->
+        <hr class="border-white border-opacity-10 my-2">
+        
+        <!-- Log Aktivitas -->
+        <a href="/inventaris/logs/index.php" 
+           class="nav-link <?= (strpos($current_uri, '/logs/') !== false) ? 'active' : '' ?>">
+            <i class="fas fa-history"></i>
+            Log Aktivitas
+        </a>
     </nav>
 </div>

@@ -16,6 +16,7 @@ if (!isset($_SESSION['login'])) {
 }
 
 require_once '../config/koneksi.php';
+require_once '../config/log_helper.php';
 
 // Cek apakah form sudah disubmit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -57,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $update_query = "UPDATE users SET password = '$new_password_hash' WHERE id = '$user_id'";
     
     if (mysqli_query($conn, $update_query)) {
+        // Log activity
+        log_activity($user_id, $_SESSION['username'], 'UPDATE_PASSWORD', 'PROFILE', 
+            'Mengubah password akun');
+        
         // Redirect dengan pesan sukses
         header('Location: settings.php?success=password');
         exit;

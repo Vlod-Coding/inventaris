@@ -10,6 +10,7 @@
 session_start();
 require_once '../config/koneksi.php';
 require_once '../config/cek_session.php';
+require_once '../config/log_helper.php';
 
 // Cek parameter aksi
 if (!isset($_GET['aksi'])) {
@@ -57,6 +58,10 @@ if ($aksi == 'tambah') {
     
     // Eksekusi query
     if (mysqli_query($conn, $query)) {
+        // Log activity
+        log_activity($_SESSION['user_id'], $_SESSION['username'], 'CREATE', 'BARANG', 
+            "Menambah barang: $nama_barang (Kode: $kode_barang)");
+        
         // Berhasil tambah data
         header('Location: index.php?status=success_add');
     } else {
@@ -109,6 +114,10 @@ elseif ($aksi == 'edit') {
     
     // Eksekusi query
     if (mysqli_query($conn, $query)) {
+        // Log activity
+        log_activity($_SESSION['user_id'], $_SESSION['username'], 'UPDATE', 'BARANG', 
+            "Mengubah data barang: $nama_barang (Kode: $kode_barang)");
+        
         // Berhasil update data
         header('Location: index.php?status=success_edit');
     } else {
@@ -147,11 +156,20 @@ elseif ($aksi == 'hapus') {
         exit;
     }
     
+    // Get nama barang for logging
+    $get_nama = "SELECT nama_barang FROM barang WHERE id = $id";
+    $result_nama = mysqli_query($conn, $get_nama);
+    $nama_barang = mysqli_fetch_assoc($result_nama)['nama_barang'] ?? 'Unknown';
+    
     // Query hapus data barang
     $query = "DELETE FROM barang WHERE id = $id";
     
     // Eksekusi query
     if (mysqli_query($conn, $query)) {
+        // Log activity
+        log_activity($_SESSION['user_id'], $_SESSION['username'], 'DELETE', 'BARANG', 
+            "Menghapus barang: $nama_barang (ID: $id)");
+        
         // Berhasil hapus data
         header('Location: index.php?status=success_delete');
     } else {

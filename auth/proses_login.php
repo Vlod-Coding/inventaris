@@ -9,6 +9,7 @@
 
 session_start();
 require_once '../config/koneksi.php';
+require_once '../config/log_helper.php';
 
 // Cek apakah form sudah disubmit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -42,12 +43,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Catat waktu login
         $_SESSION['login_time'] = date('Y-m-d H:i:s');
         
+        // Log activity
+        log_activity($user['id'], $user['username'], 'LOGIN', 'AUTH', 'User berhasil login');
+        
         // Redirect ke dashboard
         header('Location: ../index.php');
         exit;
         
     } else {
         // User tidak ditemukan atau password salah
+        // Log failed login attempt
+        log_activity(0, $username, 'LOGIN_FAILED', 'AUTH', 'Percobaan login gagal untuk username: ' . $username);
+        
         header('Location: login.php?error=1');
         exit;
     }
