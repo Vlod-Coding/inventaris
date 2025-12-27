@@ -8,14 +8,16 @@
  * Support: Local development & Railway production
  */
 
-// Cek apakah di Railway (production) atau local
-if (getenv('RAILWAY_ENVIRONMENT')) {
-    // Production - Railway
-    $db_host = getenv('DB_HOST') ?: 'localhost';
-    $db_user = getenv('DB_USER') ?: 'root';
-    $db_pass = getenv('DB_PASS') ?: '';
-    $db_name = getenv('DB_NAME') ?: 'inventaris';
-    $db_port = getenv('DB_PORT') ?: '3306';
+// Cek apakah ada DATABASE_URL dari Railway
+if (getenv('DATABASE_URL')) {
+    // Production - Railway (parse DATABASE_URL)
+    $url = parse_url(getenv('DATABASE_URL'));
+    
+    $db_host = $url['host'];
+    $db_user = $url['user'];
+    $db_pass = $url['pass'];
+    $db_name = ltrim($url['path'], '/');
+    $db_port = $url['port'] ?? 3306;
 } else {
     // Local development
     $db_host = 'localhost';
