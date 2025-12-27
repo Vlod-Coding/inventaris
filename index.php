@@ -156,18 +156,18 @@ include 'includes/header.php';
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
-                                        <tr>
+                                        <tr >
                                             <th>Kode</th>
-                                            <th>Nama Barang</th>
-                                            <th class="text-end">Stok</th>
+                                            <th class="text-center">Nama Barang</th>
+                                            <th class="text-center">Stok</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php while ($row = mysqli_fetch_assoc($result_stok_menipis)): ?>
                                             <tr>
                                                 <td><?= $row['kode_barang'] ?></td>
-                                                <td><?= $row['nama_barang'] ?></td>
-                                                <td class="text-end">
+                                                <td class="text-center"><?= $row['nama_barang'] ?></td>
+                                                <td class="text-center">
                                                     <span class="badge bg-danger">
                                                         <?= $row['stok'] ?> <?= $row['satuan'] ?>
                                                     </span>
@@ -201,9 +201,9 @@ include 'includes/header.php';
                                     <thead>
                                         <tr>
                                             <th>Jenis</th>
-                                            <th>Barang</th>
-                                            <th class="text-end">Jumlah</th>
-                                            <th>Tanggal</th>
+                                            <th class="text-center">Barang</th>
+                                            <th class="text-center">Jumlah</th>
+                                            <th class="text-center">Tanggal</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -220,9 +220,9 @@ include 'includes/header.php';
                                                         </span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td><?= $row['nama_barang'] ?></td>
-                                                <td class="text-end"><?= $row['jumlah'] ?></td>
-                                                <td><?= tgl_indo($row['tanggal']) ?></td>
+                                                <td class="text-center"><?= $row['nama_barang'] ?></td>
+                                                <td class="text-center"><?= $row['jumlah'] ?></td>
+                                                <td class="text-center"><?= tgl_indo($row['tanggal']) ?></td>
                                             </tr>
                                         <?php endwhile; ?>
                                     </tbody>

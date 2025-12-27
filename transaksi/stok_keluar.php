@@ -228,7 +228,7 @@ include '../includes/header.php';
                         <div class="table-responsive">
                             <table class="table table-hover table-striped">
                                 <thead class="table-light">
-                                    <tr>
+                                    <tr class="text-center">
                                         <th width="5%">No</th>
                                         <th width="10%">Tanggal</th>
                                         <th width="12%">Kode</th>
@@ -244,7 +244,7 @@ include '../includes/header.php';
                                         $no = 1;
                                         while ($row = mysqli_fetch_assoc($result_history)): 
                                     ?>
-                                        <tr>
+                                        <tr class="text-center">
                                             <td><?= $no++ ?></td>
                                             <td><?= date('d/m/Y', strtotime($row['tanggal'])) ?></td>
                                             <td><strong><?= $row['kode_barang'] ?></strong></td>

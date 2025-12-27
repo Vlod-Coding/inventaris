@@ -210,15 +210,6 @@ include '../includes/header.php';
                                 </tr>
                             <?php endif; ?>
                         </tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <th colspan="5" class="text-end">TOTAL:</th>
-                                <th class="text-center">
-                                    <strong><?= number_format($total_item_keluar) ?></strong>
-                                </th>
-                                <th colspan="2"></th>
-                            </tr>
-                        </tfoot>
                     </table>
                     
                     <!-- Footer untuk Print -->

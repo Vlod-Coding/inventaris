@@ -71,11 +71,11 @@ include '../includes/header.php';
                     <table class="table table-hover table-striped table-datatable">
                         <thead class="table-light">
                             <tr>
-                                <th width="5%">No</th>
-                                <th width="15%">Kode Barang</th>
-                                <th width="25%">Nama Barang</th>
-                                <th width="15%">Kategori</th>
-                                <th width="10%">Satuan</th>
+                                <th width="5%" class="text-center">No</th>
+                                <th width="15%" class="text-center">Kode Barang</th>
+                                <th width="25%" class="text-center">Nama Barang</th>
+                                <th width="15%" class="text-center">Kategori</th>
+                                <th width="10%" class="text-center">Satuan</th>
                                 <th width="10%" class="text-center">Stok</th>
                                 <th width="20%" class="text-center">Aksi</th>
                             </tr>
@@ -88,7 +88,7 @@ include '../includes/header.php';
                             while ($row = mysqli_fetch_assoc($result)): 
                                 $barang_data[] = $row; // Save for modals later
                             ?>
-                                <tr>
+                                <tr class="text-center">
                                     <td><?= $no++ ?></td>
                                     <td>
                                         <strong><?= $row['kode_barang'] ?></strong>

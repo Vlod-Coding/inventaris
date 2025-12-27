@@ -164,7 +164,7 @@ include '../includes/header.php';
                     
                     <table class="table table-hover table-striped table-bordered">
                         <thead class="table-primary">
-                            <tr>
+                            <tr class="text-center">
                                 <th width="5%">No</th>
                                 <th width="12%">Kode Barang</th>
                                 <th width="25%">Nama Barang</th>
@@ -183,7 +183,7 @@ include '../includes/header.php';
                                     // Get status menggunakan helper function
                                     $status_badge = render_stock_badge($row['stok']);
                             ?>
-                                <tr>
+                                <tr class="text-center">
                                     <td><?= $no++ ?></td>
                                     <td><strong><?= $row['kode_barang'] ?></strong></td>
                                     <td><?= $row['nama_barang'] ?></td>

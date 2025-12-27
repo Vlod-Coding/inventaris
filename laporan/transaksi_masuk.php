@@ -139,21 +139,21 @@ include '../includes/header.php';
                     <!-- Header untuk Print -->
                     <div class="print-header text-center mb-4" style="display:none;">
                         <h3>LAPORAN TRANSAKSI STOK MASUK</h3>
-                        <p>Periode: <?= tgl_indo($tanggal_awal) ?> s/d <?= tgl_indo($tanggal_akhir) ?></p>
+                        <p>Periode: <?= tgl_indo($tanggal_awal) ?> s/d <?= tgl_indo($tanggal_akhir) ?> </p>
                         <hr>
                     </div>
                     
                     <table class="table table-hover table-striped table-bordered">
                         <thead class="table-success">
                             <tr>
-                                <th width="5%">No</th>
-                                <th width="10%">Tanggal</th>
-                                <th width="12%">Kode Barang</th>
-                                <th width="20%">Nama Barang</th>
-                                <th width="12%">Kategori</th>
+                                <th width="5%" class="text-center">No</th>
+                                <th width="10%" class="text-center">Tanggal</th>
+                                <th width="12%" class="text-center">Kode Barang</th>
+                                <th width="20%" class="text-center">Nama Barang</th>
+                                <th width="12%" class="text-center">Kategori</th>
                                 <th width="10%" class="text-center">Jumlah</th>
-                                <th width="15%">Supplier</th>
-                                <th width="16%">Keterangan</th>
+                                <th width="15%" class="text-center">Supplier</th>
+                                <th width="16%" class="text-center">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -162,7 +162,7 @@ include '../includes/header.php';
                                 $no = 1;
                                 while ($row = mysqli_fetch_assoc($result)): 
                             ?>
-                                <tr>
+                                <tr class="text-center">
                                     <td><?= $no++ ?></td>
                                     <td><?= date('d/m/Y', strtotime($row['tanggal'])) ?></td>
                                     <td><strong><?= $row['kode_barang'] ?></strong></td>
@@ -196,15 +196,6 @@ include '../includes/header.php';
                                 </tr>
                             <?php endif; ?>
                         </tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <th colspan="5" class="text-end">TOTAL:</th>
-                                <th class="text-center">
-                                    <strong><?= number_format($total_item_masuk) ?></strong>
-                                </th>
-                                <th colspan="2"></th>
-                            </tr>
-                        </tfoot>
                     </table>
                     
                     <!-- Footer untuk Print -->
