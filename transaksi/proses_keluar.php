@@ -10,6 +10,7 @@
 session_start();
 require_once '../config/koneksi.php';
 require_once '../config/cek_session.php';
+require_once '../config/log_helper.php';
 
 // Validasi form sudah disubmit
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -22,10 +23,11 @@ $tanggal = escape($_POST['tanggal']);
 $barang_id = (int)$_POST['barang_id'];
 $jumlah = (int)$_POST['jumlah'];
 $keterangan = escape($_POST['keterangan']);
+$penanggung_jawab = escape($_POST['penanggung_jawab']);
 
 // Validasi data
-if (empty($tanggal) || $barang_id <= 0 || $jumlah <= 0) {
-    header('Location: stok_keluar.php?status=error&msg=Data tidak lengkap atau tidak valid');
+if (empty($tanggal) || $barang_id <= 0 || $jumlah <= 0 || empty($penanggung_jawab)) {
+    header('Location: stok_keluar.php?status=error&msg=Data tidak lengkap. Semua field wajib diisi!');
     exit;
 }
 
@@ -61,9 +63,9 @@ mysqli_begin_transaction($conn);
 try {
     // 1. Insert data ke tabel stok_keluar
     $query_insert = "INSERT INTO stok_keluar 
-                     (barang_id, tanggal, jumlah, keterangan) 
+                     (barang_id, tanggal, jumlah, keterangan, penanggung_jawab) 
                      VALUES 
-                     ($barang_id, '$tanggal', $jumlah, '$keterangan')";
+                     ($barang_id, '$tanggal', $jumlah, '$keterangan', '$penanggung_jawab')";
     
     if (!mysqli_query($conn, $query_insert)) {
         throw new Exception('Gagal menyimpan transaksi: ' . mysqli_error($conn));
@@ -89,6 +91,15 @@ try {
     
     // Commit transaksi jika semua berhasil
     mysqli_commit($conn);
+    
+    // Log activity
+    log_activity(
+        $_SESSION['user_id'], 
+        $_SESSION['username'], 
+        'CREATE', 
+        'STOK_KELUAR', 
+        "Input stok keluar: {$data_barang['nama_barang']} sebanyak $jumlah unit" . ($keterangan ? " ($keterangan)" : "")
+    );
     
     // Redirect dengan pesan sukses
     header('Location: stok_keluar.php?status=success');

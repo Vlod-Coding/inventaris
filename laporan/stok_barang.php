@@ -10,6 +10,7 @@
 session_start();
 require_once '../config/koneksi.php';
 require_once '../config/cek_session.php';
+require_once '../config/stock_helper.php';
 
 // Set variabel untuk template
 $page_title = 'Laporan Stok Barang';
@@ -179,16 +180,8 @@ include '../includes/header.php';
                             if (mysqli_num_rows($result) > 0):
                                 $no = 1;
                                 while ($row = mysqli_fetch_assoc($result)): 
-                                    // Tentukan status stok
-                                    if ($row['stok'] == 0) {
-                                        $status = '<span class="badge bg-dark">Habis</span>';
-                                    } elseif ($row['stok'] < 10) {
-                                        $status = '<span class="badge bg-danger">Menipis</span>';
-                                    } elseif ($row['stok'] < 50) {
-                                        $status = '<span class="badge bg-warning">Sedang</span>';
-                                    } else {
-                                        $status = '<span class="badge bg-success">Aman</span>';
-                                    }
+                                    // Get status menggunakan helper function
+                                    $status_badge = render_stock_badge($row['stok']);
                             ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
@@ -199,7 +192,7 @@ include '../includes/header.php';
                                     <td class="text-center">
                                         <strong><?= number_format($row['stok']) ?></strong>
                                     </td>
-                                    <td class="text-center"><?= $status ?></td>
+                                    <td class="text-center"><?= $status_badge ?></td>
                                     <td class="text-center no-print">
                                         <a href="../barang/edit.php?id=<?= $row['id'] ?>" 
                                            class="btn btn-sm btn-warning"

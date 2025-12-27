@@ -164,11 +164,10 @@ include '../includes/sidebar.php';
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="10%">User</th>
-                                <th width="10%">Action</th>
-                                <th width="12%">Module</th>
-                                <th width="35%">Deskripsi</th>
-                                <th width="10%">IP Address</th>
+                                <th width="12%">User</th>
+                                <th width="12%">Action</th>
+                                <th width="15%">Module</th>
+                                <th width="38%">Deskripsi</th>
                                 <th width="18%">Waktu</th>
                             </tr>
                         </thead>
@@ -201,7 +200,6 @@ include '../includes/sidebar.php';
                                         </td>
                                         <td><?= $log['module'] ?></td>
                                         <td><?= $log['description'] ?></td>
-                                        <td><code><?= $log['ip_address'] ?></code></td>
                                         <td>
                                             <small>
                                                 <i class="fas fa-calendar me-1"></i>
@@ -215,7 +213,7 @@ include '../includes/sidebar.php';
                                 <?php endwhile; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="6" class="text-center py-4">
                                         <i class="fas fa-info-circle fa-2x text-muted mb-2"></i>
                                         <p class="mb-0">Tidak ada log aktivitas yang ditemukan</p>
                                     </td>

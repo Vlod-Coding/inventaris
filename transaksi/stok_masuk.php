@@ -139,13 +139,30 @@ include '../includes/header.php';
                             <!-- Supplier -->
                             <div class="mb-3">
                                 <label for="supplier" class="form-label">
-                                    Supplier/Pemasok
+                                    Supplier/Pemasok <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" 
                                        class="form-control" 
                                        id="supplier" 
                                        name="supplier" 
-                                       placeholder="Nama supplier (opsional)">
+                                       placeholder="Nama supplier/pemasok"
+                                       required>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Wajib diisi untuk tracking sumber barang
+                                </small>
+                            </div>
+                            
+                            <!-- Keterangan -->
+                            <div class="mb-3">
+                                <label for="keterangan" class="form-label">
+                                    Keterangan
+                                </label>
+                                <textarea class="form-control" 
+                                          id="keterangan" 
+                                          name="keterangan" 
+                                          rows="2"
+                                          placeholder="Catatan tambahan (opsional)"></textarea>
                             </div>
                             
                             <hr>
@@ -193,11 +210,12 @@ include '../includes/header.php';
                                 <thead class="table-light">
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="12%">Tanggal</th>
-                                        <th width="15%">Kode</th>
-                                        <th width="28%">Nama Barang</th>
-                                        <th width="15%" class="text-center">Jumlah</th>
-                                        <th width="25%">Supplier</th>
+                                        <th width="10%">Tanggal</th>
+                                        <th width="12%">Kode</th>
+                                        <th width="20%">Nama Barang</th>
+                                        <th width="12%" class="text-center">Jumlah</th>
+                                        <th width="18%">Supplier</th>
+                                        <th width="23%">Keterangan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -219,13 +237,16 @@ include '../includes/header.php';
                                             <td>
                                                 <?= $row['supplier'] ? $row['supplier'] : '<span class="text-muted">-</span>' ?>
                                             </td>
+                                            <td>
+                                                <?= !empty($row['keterangan']) ? $row['keterangan'] : '<span class="text-muted">-</span>' ?>
+                                            </td>
                                         </tr>
                                     <?php 
                                         endwhile;
                                     else:
                                     ?>
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted">
+                                            <td colspan="7" class="text-center text-muted">
                                                 <i class="fas fa-inbox fa-3x mb-2"></i><br>
                                                 Belum ada transaksi stok masuk
                                             </td>

@@ -18,9 +18,7 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     INDEX idx_user_id (user_id),
     INDEX idx_action (action),
     INDEX idx_module (module),
-    INDEX idx_created_at (created_at),
-    
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Sample data untuk testing

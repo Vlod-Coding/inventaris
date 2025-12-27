@@ -52,8 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
     } else {
         // User tidak ditemukan atau password salah
-        // Log failed login attempt
-        log_activity(0, $username, 'LOGIN_FAILED', 'AUTH', 'Percobaan login gagal untuk username: ' . $username);
+        // Log failed login attempt (with error handling)
+        try {
+            @log_activity(0, $username, 'LOGIN_FAILED', 'AUTH', 'Percobaan login gagal untuk username: ' . $username);
+        } catch (Exception $e) {
+            // Silently fail if logging doesn't work
+        }
         
         header('Location: login.php?error=1');
         exit;

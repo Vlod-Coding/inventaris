@@ -163,8 +163,25 @@ include '../includes/header.php';
                                 <textarea class="form-control" 
                                           id="keterangan" 
                                           name="keterangan" 
-                                          rows="3"
+                                          rows="2"
                                           placeholder="Keterangan penggunaan barang (opsional)"></textarea>
+                            </div>
+                            
+                            <!-- Penanggung Jawab -->
+                            <div class="mb-3">
+                                <label for="penanggung_jawab" class="form-label">
+                                    Penanggung Jawab <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="penanggung_jawab" 
+                                       name="penanggung_jawab" 
+                                       placeholder="Nama penanggung jawab / yang mengambil barang"
+                                       required>
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Wajib diisi untuk tracking barang yang diambil
+                                </small>
                             </div>
                             
                             <hr>
@@ -213,11 +230,12 @@ include '../includes/header.php';
                                 <thead class="table-light">
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="12%">Tanggal</th>
-                                        <th width="13%">Kode</th>
-                                        <th width="25%">Nama Barang</th>
-                                        <th width="12%" class="text-center">Jumlah</th>
-                                        <th width="33%">Keterangan</th>
+                                        <th width="10%">Tanggal</th>
+                                        <th width="12%">Kode</th>
+                                        <th width="20%">Nama Barang</th>
+                                        <th width="10%" class="text-center">Jumlah</th>
+                                        <th width="18%">Penanggung Jawab</th>
+                                        <th width="25%">Keterangan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -237,6 +255,9 @@ include '../includes/header.php';
                                                 </span>
                                             </td>
                                             <td>
+                                                <?= !empty($row['penanggung_jawab']) ? $row['penanggung_jawab'] : '<span class="text-muted">-</span>' ?>
+                                            </td>
+                                            <td>
                                                 <?= $row['keterangan'] ? $row['keterangan'] : '<span class="text-muted">-</span>' ?>
                                             </td>
                                         </tr>
@@ -245,7 +266,7 @@ include '../includes/header.php';
                                     else:
                                     ?>
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted">
+                                            <td colspan="7" class="text-center text-muted">
                                                 <i class="fas fa-inbox fa-3x mb-2"></i><br>
                                                 Belum ada transaksi stok keluar
                                             </td>

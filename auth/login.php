@@ -38,6 +38,9 @@ if (isset($_GET['error'])) {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -92,13 +95,6 @@ if (isset($_GET['error'])) {
 
         <!-- Body -->
         <div class="login-body">
-            <?php if ($error): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i><?= $error ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-
             <form action="proses_login.php" method="POST">
                 <!-- Username -->
                 <div class="mb-3">
@@ -139,6 +135,24 @@ if (isset($_GET['error'])) {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Show error popup if there's an error
+    <?php if ($error): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Gagal!',
+            text: '<?= $error ?>',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#667eea',
+            backdrop: true,
+            allowOutsideClick: true
+        });
+    <?php endif; ?>
+</script>
 
 </body>
 </html>

@@ -149,11 +149,11 @@ include '../includes/header.php';
                                 <th width="5%">No</th>
                                 <th width="10%">Tanggal</th>
                                 <th width="12%">Kode Barang</th>
-                                <th width="23%">Nama Barang</th>
+                                <th width="20%">Nama Barang</th>
                                 <th width="12%">Kategori</th>
                                 <th width="10%" class="text-center">Jumlah</th>
-                                <th width="18%">Supplier</th>
-                                <th width="10%">Waktu Input</th>
+                                <th width="15%">Supplier</th>
+                                <th width="16%">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -181,9 +181,7 @@ include '../includes/header.php';
                                         <?= $row['supplier'] ? $row['supplier'] : '<span class="text-muted">-</span>' ?>
                                     </td>
                                     <td>
-                                        <small>
-                                            <?= date('d/m/Y H:i', strtotime($row['created_at'])) ?>
-                                        </small>
+                                        <?= !empty($row['keterangan']) ? $row['keterangan'] : '<span class="text-muted">-</span>' ?>
                                     </td>
                                 </tr>
                             <?php 
@@ -257,6 +255,51 @@ include '../includes/header.php';
     .card {
         border: none;
         box-shadow: none;
+    }
+    
+    /* Force print badge colors */
+    .badge {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    /* Ensure badge backgrounds print */
+    .badge.bg-info {
+        background-color: #17a2b8 !important;
+        color: white !important;
+        border: 1px solid #17a2b8 !important;
+    }
+    
+    .badge.bg-success {
+        background-color: #28a745 !important;
+        color: white !important;
+        border: 1px solid #28a745 !important;
+    }
+    
+    .badge.bg-primary {
+        background-color: #667eea !important;
+        color: white !important;
+        border: 1px solid #667eea !important;
+    }
+    
+    .badge.bg-warning {
+        background-color: #ffc107 !important;
+        color: #000 !important;
+        border: 1px solid #ffc107 !important;
+    }
+    
+    .badge.bg-danger {
+        background-color: #dc3545 !important;
+        color: white !important;
+        border: 1px solid #dc3545 !important;
+    }
+    
+    /* Ensure table header color prints */
+    .table-success {
+        background-color: #d4edda !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }
 </style>
