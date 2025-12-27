@@ -1,46 +1,51 @@
 <?php
 /**
  * ========================================
- * KONEKSI DATABASE
+ * KONFIGURASI DATABASE
  * ========================================
  * File: config/koneksi.php
- * Fungsi: Membuat koneksi ke database MySQL
- * Author: Sistem Inventaris
- * Date: 2025
+ * Fungsi: Koneksi ke database MySQL
+ * Support: Local development & Railway production
  */
 
-// Konfigurasi Database
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'inventaris_db');
+// Cek apakah di Railway (production) atau local
+if (getenv('RAILWAY_ENVIRONMENT')) {
+    // Production - Railway
+    $db_host = getenv('DB_HOST') ?: 'localhost';
+    $db_user = getenv('DB_USER') ?: 'root';
+    $db_pass = getenv('DB_PASS') ?: '';
+    $db_name = getenv('DB_NAME') ?: 'inventaris';
+    $db_port = getenv('DB_PORT') ?: '3306';
+} else {
+    // Local development
+    $db_host = 'localhost';
+    $db_user = 'root';
+    $db_pass = '';
+    $db_name = 'inventaris';
+    $db_port = '3306';
+}
 
-// Membuat koneksi menggunakan MySQLi
-$conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+// Koneksi ke database
+$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
 
-// Cek koneksi berhasil atau tidak
+// Cek koneksi
 if (!$conn) {
-    die("Koneksi Database Gagal: " . mysqli_connect_error());
+    die("Koneksi database gagal: " . mysqli_connect_error());
 }
 
-// Set charset UTF-8 untuk mendukung karakter Indonesia
-mysqli_set_charset($conn, "utf8");
+// Set charset
+mysqli_set_charset($conn, "utf8mb4");
 
 /**
- * Fungsi untuk mencegah SQL Injection
- * @param string $data - Data yang akan di-escape
- * @return string - Data yang sudah aman
+ * Helper function untuk escape string
  */
-function escape($data) {
+function escape($string) {
     global $conn;
-    return mysqli_real_escape_string($conn, trim($data));
+    return mysqli_real_escape_string($conn, trim($string));
 }
 
 /**
- * Fungsi untuk menampilkan alert Bootstrap
- * @param string $type - Tipe alert (success, danger, warning, info)
- * @param string $message - Pesan yang akan ditampilkan
- * @return string - HTML alert
+ * Helper function untuk alert Bootstrap
  */
 function alert($type, $message) {
     return '<div class="alert alert-'.$type.' alert-dismissible fade show" role="alert">
