@@ -44,8 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Catat waktu login
         $_SESSION['login_time'] = date('Y-m-d H:i:s');
         
-        // Log successful login
-        log_activity($user['id'], $user['username'], 'LOGIN_SUCCESS', 'AUTH', 'User berhasil login');
         
         // Log activity
         log_activity($user['id'], $user['username'], 'LOGIN', 'AUTH', 'User berhasil login');
