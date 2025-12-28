@@ -69,8 +69,8 @@ include '../includes/sidebar.php';
                             <div class="mb-3">
                                 <i class="fas fa-user-circle" style="font-size: 6rem; color: var(--primary-color);"></i>
                             </div>
-                            <h4 class="mb-0"><?= $user['nama_lengkap'] ?></h4>
-                            <p class="text-muted">Administrator</p>
+                            <h4 class="mb-0"><?= $user['username'] ?></h4>
+                            <p class="text-muted"><?= ucfirst($user['role']) ?></p>
                         </div>
 
                         <hr>

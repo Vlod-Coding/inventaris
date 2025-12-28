@@ -62,8 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         log_activity($user_id, $_SESSION['username'], 'UPDATE_PASSWORD', 'PROFILE', 
             'Mengubah password akun');
         
-        // Redirect dengan pesan sukses
-        header('Location: settings.php?success=password');
+        // Logout otomatis - destroy session
+        session_unset();
+        session_destroy();
+        
+        // Redirect ke login dengan pesan sukses
+        header('Location: ../auth/login.php?success=password_updated');
         exit;
     } else {
         // Error database

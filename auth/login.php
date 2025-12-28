@@ -17,11 +17,24 @@ if (isset($_SESSION['login'])) {
 
 // Cek jika ada pesan error
 $error = '';
+$success = '';
+
 if (isset($_GET['error'])) {
     if ($_GET['error'] == 1) {
         $error = 'Username atau Password salah!';
     } elseif ($_GET['error'] == 2) {
         $error = 'Silakan login terlebih dahulu!';
+    }
+}
+
+// Cek jika ada pesan success
+if (isset($_GET['success'])) {
+    if ($_GET['success'] == 'username_updated') {
+        $success = 'Username berhasil diupdate! Silakan login dengan username baru Anda.';
+    } elseif ($_GET['success'] == 'password_updated') {
+        $success = 'Password berhasil diupdate! Silakan login dengan password baru Anda.';
+    } elseif ($_GET['success'] == 'account_updated') {
+        $success = 'Username dan Password berhasil diupdate! Silakan login dengan kredensial baru Anda.';
     }
 }
 ?>
@@ -665,6 +678,21 @@ if (isset($_GET['error'])) {
                 icon: 'error',
                 title: 'Login Gagal!',
                 text: '<?= $error ?>',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#1a1a1a',
+                backdrop: true,
+                allowOutsideClick: true
+            });
+        }, 3000);
+    <?php endif; ?>
+    
+    <?php if ($success): ?>
+        // Wait for loading screen to finish before showing success
+        setTimeout(function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Username Berhasil Diupdate!',
+                text: '<?= $success ?>',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#1a1a1a',
                 backdrop: true,

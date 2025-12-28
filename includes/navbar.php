@@ -57,8 +57,8 @@
                 <button class="btn btn-light dropdown-toggle" type="button" 
                         data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle me-2"></i>
-                    <span class="d-none d-sm-inline"><?= $_SESSION['nama_lengkap'] ?></span>
-                    <span class="d-inline d-sm-none">Admin</span>
+                    <span class="d-none d-sm-inline"><?= $_SESSION['username'] ?></span>
+                    <span class="d-inline d-sm-none"><?= $_SESSION['username'] ?></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>

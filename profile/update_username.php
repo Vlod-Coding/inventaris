@@ -54,11 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         log_activity($user_id, $_SESSION['username'], 'UPDATE_USERNAME', 'PROFILE', 
             "Mengubah username dari '{$_SESSION['username']}' menjadi '$new_username'");
         
-        // Update session
-        $_SESSION['username'] = $new_username;
+        // Logout otomatis - destroy session
+        session_unset();
+        session_destroy();
         
-        // Redirect dengan pesan sukses
-        header('Location: settings.php?success=username');
+        // Redirect ke login dengan pesan sukses
+        header('Location: ../auth/login.php?success=username_updated');
         exit;
     } else {
         // Error database
