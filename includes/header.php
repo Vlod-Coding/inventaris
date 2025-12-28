@@ -7,19 +7,19 @@
     
     
     <!-- Bootstrap CSS (Local) -->
-    <link href="/inventaris/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Font Awesome (Local) -->
-    <link rel="stylesheet" href="/inventaris/assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="../assets/css/fontawesome.min.css">
     
     <!-- DataTables CSS (Local) -->
-    <link rel="stylesheet" href="/inventaris/assets/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="../assets/css/dataTables.bootstrap5.min.css">
     
     <!-- SweetAlert2 CSS (Local) -->
-    <link rel="stylesheet" href="/inventaris/assets/css/sweetalert2.min.css">
+    <link rel="stylesheet" href="../assets/css/sweetalert2.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/inventaris/assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/custom.css">
 </head>
 <body>
     <!-- Sidebar Overlay -->

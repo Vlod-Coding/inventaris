@@ -12,10 +12,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
 $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
 ?>
 
+<?php
+// Deteksi base path untuk support localhost dan production
+$base_path = '';
+if (strpos($_SERVER['REQUEST_URI'], '/inventaris/') !== false) {
+    // Localhost dengan folder inventaris
+    $base_path = '/inventaris';
+}
+// Jika tidak ada /inventaris/, berarti production (base_path = '')
+?>
+
 <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
-        <a href="/inventaris/index.php" class="logo-link">
+        <a href="<?= $base_path ?>/index.php" class="logo-link">
             <i class="fas fa-box-open"></i>
             <h5 class="mb-0">Sistem Inventaris</h5>
             <small>Manajemen Stok Barang</small>
@@ -52,7 +62,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
     <!-- Navigation Menu -->
     <nav class="nav flex-column mt-3">
         <!-- Dashboard -->
-        <a href="/inventaris/index.php" 
+        <a href="<?= $base_path ?>/index.php" 
            class="nav-link <?= ($current_page == 'index.php' && strpos($current_uri, '/barang/') === false && strpos($current_uri, '/transaksi/') === false && strpos($current_uri, '/laporan/') === false && strpos($current_uri, '/logs/') === false && strpos($current_uri, '/users/') === false) ? 'active' : '' ?>">
             <i class="fas fa-home"></i>
             Dashboard
@@ -60,7 +70,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
         
         <!-- Data Barang (CS & Admin only) -->
         <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['cs', 'administrator'])): ?>
-        <a href="/inventaris/barang/index.php" 
+        <a href="<?= $base_path ?>/barang/index.php" 
            class="nav-link <?= (strpos($current_uri, '/barang/') !== false) ? 'active' : '' ?>">
             <i class="fas fa-boxes"></i>
             Data Barang
@@ -69,7 +79,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
         
         <!-- Stok Masuk (CS & Admin only) -->
         <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['cs', 'administrator'])): ?>
-        <a href="/inventaris/transaksi/stok_masuk.php" 
+        <a href="<?= $base_path ?>/transaksi/stok_masuk.php" 
            class="nav-link <?= ($current_page == 'stok_masuk.php') ? 'active' : '' ?>">
             <i class="fas fa-arrow-down"></i>
             Stok Masuk
@@ -78,7 +88,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
         
         <!-- Stok Keluar (CS & Admin only) -->
         <?php if (isset($_SESSION['role']) && in_array($_SESSION['role'], ['cs', 'administrator'])): ?>
-        <a href="/inventaris/transaksi/stok_keluar.php" 
+        <a href="<?= $base_path ?>/transaksi/stok_keluar.php" 
            class="nav-link <?= ($current_page == 'stok_keluar.php') ? 'active' : '' ?>">
             <i class="fas fa-arrow-up"></i>
             Stok Keluar
@@ -91,21 +101,21 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
         <?php endif; ?>
         
         <!-- Laporan Stok Barang (All roles) -->
-        <a href="/inventaris/laporan/stok_barang.php" 
+        <a href="<?= $base_path ?>/laporan/stok_barang.php" 
            class="nav-link <?= ($current_page == 'stok_barang.php') ? 'active' : '' ?>">
             <i class="fas fa-chart-bar"></i>
             Laporan Stok
         </a>
         
         <!-- Laporan Transaksi Masuk (All roles) -->
-        <a href="/inventaris/laporan/transaksi_masuk.php" 
+        <a href="<?= $base_path ?>/laporan/transaksi_masuk.php" 
            class="nav-link <?= ($current_page == 'transaksi_masuk.php') ? 'active' : '' ?>">
             <i class="fas fa-file-alt"></i>
             Laporan Masuk
         </a>
         
         <!-- Laporan Transaksi Keluar (All roles) -->
-        <a href="/inventaris/laporan/transaksi_keluar.php" 
+        <a href="<?= $base_path ?>/laporan/transaksi_keluar.php" 
            class="nav-link <?= ($current_page == 'transaksi_keluar.php') ? 'active' : '' ?>">
             <i class="fas fa-file-invoice"></i>
             Laporan Keluar
@@ -116,7 +126,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
         
         <!-- Kelola User (Admin Only) -->
         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'administrator'): ?>
-        <a href="/inventaris/users/index.php" 
+        <a href="<?= $base_path ?>/users/index.php" 
            class="nav-link <?= (strpos($current_uri, '/users/') !== false) ? 'active' : '' ?>">
             <i class="fas fa-users-cog"></i>
             Kelola User
@@ -127,7 +137,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
         <?php endif; ?>
         
         <!-- Log Aktivitas (All roles) -->
-        <a href="/inventaris/logs/index.php" 
+        <a href="<?= $base_path ?>/logs/index.php" 
            class="nav-link <?= (strpos($current_uri, '/logs/') !== false) ? 'active' : '' ?>">
             <i class="fas fa-history"></i>
             Log Aktivitas

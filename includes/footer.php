@@ -12,7 +12,7 @@
             <button class="btn btn-logout-cancel" onclick="hideLogoutModal()">
                 <i class="fas fa-times me-2"></i>Batal
             </button>
-            <a href="/inventaris/auth/logout.php" class="btn btn-logout-confirm">
+            <a href="../auth/logout.php" class="btn btn-logout-confirm">
                 <i class="fas fa-check me-2"></i>Ya, Logout
             </a>
         </div>
@@ -30,20 +30,23 @@
     </footer>
 
     <!-- jQuery (Local) -->
-    <script src="/inventaris/assets/js/jquery-3.7.0.min.js"></script>
+    <script src="../assets/js/jquery-3.7.0.min.js"></script>
     
     <!-- Bootstrap JS (Local) -->
-    <script src="/inventaris/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
     
     <!-- DataTables JS (Local) -->
-    <script src="/inventaris/assets/js/dataTables.min.js"></script>
-    <script src="/inventaris/assets/js/dataTables.bootstrap5.min.js"></script>
+    <script src="../assets/js/dataTables.min.js"></script>
+    <script src="../assets/js/dataTables.bootstrap5.min.js"></script>
     
     <!-- Sweet Alert 2 (Local) -->
-    <script src="/inventaris/assets/js/sweetalert2.min.js"></script>
+    <script src="../assets/js/sweetalert2.min.js"></script>
     
     <!-- Custom JS -->
     <script>
+        // Disable DataTables error alerts (suppress annoying popups)
+        $.fn.dataTable.ext.errMode = 'none';
+        
         // Inisialisasi DataTables
         $(document).ready(function() {
             $('.table-datatable').DataTable({

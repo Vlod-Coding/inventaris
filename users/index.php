@@ -74,7 +74,7 @@ include '../includes/header.php';
                 <div class="table-responsive">
                     <table class="table table-hover table-striped table-datatable">
                         <thead class="table-light text-center">
-                            <tr>
+                            <tr class="text-center">
                                 <th width="5%">No</th>
                                 <th width="15%">Username</th>
                                 <th width="25%">Nama Lengkap</th>
