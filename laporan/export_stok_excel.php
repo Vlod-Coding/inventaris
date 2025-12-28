@@ -38,47 +38,121 @@ header("Expires: 0");
 <head>
     <meta charset="UTF-8">
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+        }
+        .header-section {
+            margin-bottom: 20px;
+        }
+        .company-info {
+            font-size: 9pt;
+            line-height: 1.4;
+        }
+        .report-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+        .info-box {
+            border: 2px solid #2c3e50;
+            padding: 8px;
+            margin: 10px 0;
+            background-color: #f8f9fa;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
         table {
             border-collapse: collapse;
             width: 100%;
+            margin-top: 15px;
         }
         th, td {
             border: 1px solid #000;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
         th {
             background-color: #4CAF50;
             color: white;
             font-weight: bold;
+            font-size: 10pt;
         }
-        .text-center {
-            text-align: center;
+        td {
+            font-size: 10pt;
+        }
+        .text-left {
+            text-align: left;
         }
         .text-right {
             text-align: right;
         }
+        .footer-section {
+            margin-top: 20px;
+            font-size: 9pt;
+            color: #666;
+        }
+        .total-row {
+            background-color: #e8f5e9;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h2>LAPORAN STOK BARANG</h2>
-    <p>Tanggal Cetak: <?= date('d F Y H:i:s') ?> WIB</p>
-    <?php if (!empty($filter_kategori)): ?>
-        <p>Kategori: <?= $filter_kategori ?></p>
-    <?php endif; ?>
-    <p>Dicetak oleh: <?= $_SESSION['nama_lengkap'] ?></p>
-    <br>
+    <!-- Header Section -->
+    <div class="header-section">
+        <table style="border: none; width: 100%;">
+            <tr style="border: none;">
+                <td style="border: none; width: 70%; vertical-align: top;">
+                    <div class="company-info">
+                        <strong style="font-size: 14pt;">SISTEM INVENTARIS</strong><br>
+                        Jl. Contoh Alamat No.123<br>
+                        Kota, Provinsi 12345<br>
+                        Phone: 0123-456789<br>
+                        Email: info@inventaris.com
+                    </div>
+                </td>
+                <td style="border: none; width: 30%; text-align: right; vertical-align: top;">
+                    <div style="border: 2px solid #2c3e50; padding: 10px; background-color: #f0f0f0;">
+                        <strong>LAPORAN STOK</strong><br>
+                        <small>Tanggal Cetak:</small><br>
+                        <?= date('d/m/Y H:i') ?> WIB
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Report Title -->
+    <div class="report-title">
+        LAPORAN STOK BARANG
+    </div>
+
+    <!-- Report Info -->
+    <div class="info-box">
+        <?php if (!empty($filter_kategori)): ?>
+            <span class="info-label">Kategori:</span> <?= $filter_kategori ?><br>
+        <?php endif; ?>
+        <span class="info-label">Dicetak oleh:</span> <?= $_SESSION['nama_lengkap'] ?><br>
+        <span class="info-label">Tanggal Laporan:</span> <?= date('d F Y') ?>
+    </div>
     
+    <!-- Data Table -->
     <table>
         <thead>
             <tr>
-                <th>No</th>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th>Kategori</th>
-                <th>Satuan</th>
-                <th class="text-center">Stok</th>
-                <th>Status</th>
+                <th style="width: 5%;">No</th>
+                <th style="width: 12%;">Kode Barang</th>
+                <th style="width: 30%;">Nama Barang</th>
+                <th style="width: 15%;">Kategori</th>
+                <th style="width: 10%;">Satuan</th>
+                <th style="width: 10%;">Stok</th>
+                <th style="width: 18%;">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -101,12 +175,12 @@ header("Expires: 0");
                     }
             ?>
                 <tr>
-                    <td class="text-center"><?= $no++ ?></td>
+                    <td><?= $no++ ?></td>
                     <td><?= $row['kode_barang'] ?></td>
-                    <td><?= $row['nama_barang'] ?></td>
+                    <td class="text-left"><?= $row['nama_barang'] ?></td>
                     <td><?= $row['kategori'] ?></td>
                     <td><?= $row['satuan'] ?></td>
-                    <td class="text-center"><?= number_format($row['stok']) ?></td>
+                    <td><strong><?= number_format($row['stok']) ?></strong></td>
                     <td><?= $status ?></td>
                 </tr>
             <?php 
@@ -114,21 +188,25 @@ header("Expires: 0");
             else:
             ?>
                 <tr>
-                    <td colspan="7" class="text-center">Tidak ada data</td>
+                    <td colspan="7" style="text-align: center; color: #999;">Tidak ada data</td>
                 </tr>
             <?php endif; ?>
         </tbody>
         <tfoot>
-            <tr>
+            <tr class="total-row">
                 <th colspan="5" class="text-right">TOTAL STOK:</th>
-                <th class="text-center"><?= isset($total_stok) ? number_format($total_stok) : 0 ?></th>
+                <th><?= isset($total_stok) ? number_format($total_stok) : 0 ?></th>
                 <th></th>
             </tr>
         </tfoot>
     </table>
     
-    <br>
-    <p><em>Laporan ini digenerate otomatis oleh Sistem Inventaris</em></p>
+    <!-- Footer Section -->
+    <div class="footer-section">
+        <hr style="border: 1px solid #ddd; margin: 20px 0;">
+        <em>Laporan ini digenerate otomatis oleh Sistem Inventaris</em><br>
+        <small>Dicetak pada: <?= date('d F Y H:i:s') ?> WIB</small>
+    </div>
 </body>
 </html>
 <?php

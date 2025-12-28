@@ -186,7 +186,7 @@ include '../includes/header.php';
                 </div>
                 
                 <!-- Info Box -->
-                <div class="card border-warning mt-3">
+                <div class="card mt-3">
                     <div class="card-header bg-warning text-white">
                         <i class="fas fa-lightbulb me-2"></i>
                         Informasi

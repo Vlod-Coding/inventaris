@@ -51,7 +51,7 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
     <nav class="nav flex-column mt-3">
         <!-- Dashboard -->
         <a href="/inventaris/index.php" 
-           class="nav-link <?= ($current_page == 'index.php' && strpos($current_uri, '/barang/') === false && strpos($current_uri, '/transaksi/') === false && strpos($current_uri, '/laporan/') === false && strpos($current_uri, '/logs/') === false) ? 'active' : '' ?>">
+           class="nav-link <?= ($current_page == 'index.php' && strpos($current_uri, '/barang/') === false && strpos($current_uri, '/transaksi/') === false && strpos($current_uri, '/laporan/') === false && strpos($current_uri, '/logs/') === false && strpos($current_uri, '/users/') === false) ? 'active' : '' ?>">
             <i class="fas fa-home"></i>
             Dashboard
         </a>

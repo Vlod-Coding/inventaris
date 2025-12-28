@@ -73,16 +73,30 @@ include '../includes/header.php';
                 <?php endif; ?>
             </div>
             <div class="card-body">
+                <!-- Search Box -->
+                <div class="mb-3 d-flex justify-content-end">
+                    <div class="input-group" style="width: 350px;">
+                        <span class="input-group-text bg-light">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" 
+                               id="searchBarang" 
+                               class="form-control" 
+                               placeholder="Cari data..."
+                               autocomplete="off">
+                    </div>
+                </div>
+                
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped table-datatable">
+                    <table id="tableBarang" class="table table-hover table-striped">
                         <thead class="table-light">
                             <tr>
-                                <th width="5%" class="text-center">No</th>
-                                <th width="15%" class="text-center">Kode Barang</th>
-                                <th width="25%" class="text-center">Nama Barang</th>
-                                <th width="15%" class="text-center">Kategori</th>
-                                <th width="10%" class="text-center">Satuan</th>
-                                <th width="10%" class="text-center">Stok</th>
+                                <th width="5%" class="text-center sortable">No</th>
+                                <th width="15%" class="text-center sortable">Kode Barang</th>
+                                <th width="25%" class="text-center sortable">Nama Barang</th>
+                                <th width="15%" class="text-center sortable">Kategori</th>
+                                <th width="10%" class="text-center sortable">Satuan</th>
+                                <th width="10%" class="text-center sortable">Stok</th>
                                 <th width="20%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -106,7 +120,7 @@ include '../includes/header.php';
                                         </span>
                                     </td>
                                     <td><?= $row['satuan'] ?></td>
-                                    <td class="text-center">
+                                    <td class="text-center" data-sort="<?= $row['stok'] ?>">
                                         <?php
                                         // Tentukan warna badge berdasarkan jumlah stok
                                         if ($row['stok'] < 10) {
@@ -217,5 +231,14 @@ include '../includes/header.php';
         
     </div>
 </div>
+
+<!-- Include Table Utils -->
+<script src="../assets/js/table-utils.js"></script>
+<script>
+    // Initialize table search and sort
+    document.addEventListener('DOMContentLoaded', function() {
+        initTable('tableBarang', 'searchBarang');
+    });
+</script>
 
 <?php include '../includes/footer.php'; ?>

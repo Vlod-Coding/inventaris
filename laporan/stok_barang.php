@@ -109,7 +109,7 @@ include '../includes/header.php';
         
         <!-- Card Laporan -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center no-print">
                 <span>
                     <i class="fas fa-chart-bar me-2"></i>
                     Laporan Stok Barang
@@ -127,7 +127,7 @@ include '../includes/header.php';
             <div class="card-body">
                 
                 <!-- Filter -->
-                <div class="row mb-3">
+                <div class="row mb-3 no-print">
                     <div class="col-md-4">
                         <form method="GET" action="">
                             <div class="input-group">
@@ -148,6 +148,18 @@ include '../includes/header.php';
                             </div>
                         </form>
                     </div>
+                    <div class="col-md-4 offset-md-4 no-print">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" 
+                                   id="searchStokBarang" 
+                                   class="form-control" 
+                                   placeholder="Cari data..."
+                                   autocomplete="off">
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Tabel Laporan -->
@@ -162,16 +174,16 @@ include '../includes/header.php';
                         <hr>
                     </div>
                     
-                    <table class="table table-hover table-striped table-bordered">
+                    <table id="tableStokBarang" class="table table-hover table-striped table-bordered">
                         <thead class="table-primary">
                             <tr class="text-center">
-                                <th width="5%">No</th>
-                                <th width="12%">Kode Barang</th>
-                                <th width="25%">Nama Barang</th>
-                                <th width="15%">Kategori</th>
-                                <th width="10%">Satuan</th>
-                                <th width="12%" class="text-center">Stok</th>
-                                <th width="12%" class="text-center">Status</th>
+                                <th width="5%" class="sortable">No</th>
+                                <th width="12%" class="sortable">Kode Barang</th>
+                                <th width="25%" class="sortable">Nama Barang</th>
+                                <th width="15%" class="sortable">Kategori</th>
+                                <th width="10%" class="sortable">Satuan</th>
+                                <th width="12%" class="text-center sortable">Stok</th>
+                                <th width="12%" class="text-center sortable">Status</th>
                                 <th width="9%" class="text-center no-print">Aksi</th>
                             </tr>
                         </thead>
@@ -189,7 +201,7 @@ include '../includes/header.php';
                                     <td><?= $row['nama_barang'] ?></td>
                                     <td><?= $row['kategori'] ?></td>
                                     <td><?= $row['satuan'] ?></td>
-                                    <td class="text-center">
+                                    <td class="text-center" data-sort="<?= $row['stok'] ?>">
                                         <strong><?= number_format($row['stok']) ?></strong>
                                     </td>
                                     <td class="text-center"><?= $status_badge ?></td>
@@ -239,19 +251,49 @@ include '../includes/header.php';
 <!-- CSS untuk Print -->
 <style>
 @media print {
-    body * {
-        visibility: hidden;
+    /* Hide sidebar and navbar */
+    .sidebar,
+    .navbar,
+    nav.navbar,
+    .content-wrapper > nav {
+        display: none !important;
     }
-    #printArea, #printArea * {
-        visibility: visible;
+    
+    /* Reset body and main containers */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
     }
+    
+    .content-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .container-fluid {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Hide stat cards and other non-print elements */
+    .stat-card,
+    .card:not(:has(#printArea)),
+    .row:has(.stat-card) {
+        display: none !important;
+    }
+    
+    /* Show only print area */
     #printArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
+    
     .no-print {
+        display: none !important;
+    }
+    .sort-icon {
         display: none !important;
     }
     .print-header, .print-footer {
@@ -263,6 +305,26 @@ include '../includes/header.php';
     .card {
         border: none;
         box-shadow: none;
+    }
+    
+    /* Hide scrollbars */
+    .table-responsive {
+        overflow: visible !important;
+    }
+    
+    body {
+        overflow: visible !important;
+    }
+    
+    /* Ensure table fits page width */
+    .table {
+        width: 100% !important;
+    }
+    
+    /* Page settings */
+    @page {
+        margin: 1cm;
+        size: A4;
     }
 }
 </style>
@@ -277,6 +339,15 @@ function exportExcel() {
     // Redirect ke file export Excel
     window.location.href = 'export_stok_excel.php<?= !empty($filter_kategori) ? "?kategori=$filter_kategori" : "" ?>';
 }
+</script>
+
+<!-- Include Table Utils -->
+<script src="../assets/js/table-utils.js"></script>
+<script>
+    // Initialize table search and sort
+    document.addEventListener('DOMContentLoaded', function() {
+        initTable('tableStokBarang', 'searchStokBarang');
+    });
 </script>
 
 <?php include '../includes/footer.php'; ?>
