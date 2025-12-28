@@ -93,7 +93,7 @@ include 'includes/header.php';
             
             <!-- Total Stok -->
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card green">
+                <div class="card stat-card blue">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -110,7 +110,7 @@ include 'includes/header.php';
             
             <!-- Transaksi Masuk Hari Ini -->
             <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card orange">
+                <div class="card stat-card green">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>

@@ -62,7 +62,7 @@ include '../includes/header.php';
         <!-- Statistik Cards -->
         <div class="row mb-4">
             <div class="col-md-6">
-                <div class="card stat-card red">
+                <div class="card stat-card blue">
                     <div class="card-body">
                         <h6 class="text-muted mb-1">Total Transaksi</h6>
                         <h3 class="mb-0"><?= number_format($total_transaksi) ?></h3>
@@ -73,7 +73,7 @@ include '../includes/header.php';
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card stat-card orange">
+                <div class="card stat-card red">
                     <div class="card-body">
                         <h6 class="text-muted mb-1">Total Item Keluar</h6>
                         <h3 class="mb-0"><?= number_format($total_item_keluar) ?></h3>

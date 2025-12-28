@@ -82,7 +82,7 @@ include '../includes/header.php';
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card green">
+                <div class="card stat-card blue">
                     <div class="card-body">
                         <h6 class="text-muted mb-1">Total Stok</h6>
                         <h3 class="mb-0"><?= number_format($total_stok) ?></h3>

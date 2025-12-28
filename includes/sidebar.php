@@ -15,9 +15,11 @@ $current_uri = $_SERVER['REQUEST_URI']; // Path lengkap untuk deteksi folder
 <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
-        <i class="fas fa-box-open"></i>
-        <h5 class="mb-0">Sistem Inventaris</h5>
-        <small>Manajemen Stok Barang</small>
+        <a href="/inventaris/index.php" class="logo-link">
+            <i class="fas fa-box-open"></i>
+            <h5 class="mb-0">Sistem Inventaris</h5>
+            <small>Manajemen Stok Barang</small>
+        </a>
     </div>
     
     <!-- User Info -->
