@@ -375,11 +375,12 @@ function printLaporan() {
 }
 
 function exportExcel() {
-    Swal.fire({
-        title: 'Export ke Excel',
-        text: 'Fitur export akan segera tersedia',
-        icon: 'info'
-    });
+    // Get tanggal awal dan akhir dari form
+    const tanggalAwal = document.querySelector('input[name="tanggal_awal"]').value;
+    const tanggalAkhir = document.querySelector('input[name="tanggal_akhir"]').value;
+    
+    // Redirect ke export Excel dengan parameter tanggal
+    window.location.href = `export_transaksi_keluar_excel.php?tanggal_awal=${tanggalAwal}&tanggal_akhir=${tanggalAkhir}`;
 }
 </script>
 

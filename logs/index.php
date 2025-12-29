@@ -18,11 +18,17 @@ if (!isset($_SESSION['login'])) {
 require_once '../config/koneksi.php';
 require_once '../config/log_helper.php';
 
+// Deteksi base path untuk support localhost dan production
+$base_path = '';
+if (strpos($_SERVER['REQUEST_URI'], '/inventaris/') !== false) {
+    $base_path = '/inventaris';
+}
+
 // Setup page variables
 $page_title = 'Log Aktivitas';
 $page_icon = 'history';
-$breadcrumb = [
-    ['label' => 'Dashboard', 'url' => '/inventaris/index.php'],
+$breadcrumbs = [
+    ['label' => 'Dashboard', 'url' => $base_path . '/index.php'],
     ['label' => 'Log Aktivitas']
 ];
 
@@ -162,7 +168,7 @@ include '../includes/sidebar.php';
                 <div class="table-responsive">
                     <table class="table table-hover table-datatable">
                         <thead>
-                            <tr>
+                            <tr class="text-center">
                                 <th width="5%">No</th>
                                 <th width="12%">User</th>
                                 <th width="12%">Action</th>

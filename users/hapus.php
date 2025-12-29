@@ -34,9 +34,9 @@ if (mysqli_num_rows($result) == 0) {
 
 $user_data = mysqli_fetch_assoc($result);
 
-// Cek apakah user yang akan dihapus adalah owner
-if ($user_data['role'] === 'owner') {
-    $_SESSION['error_message'] = 'User dengan role Owner tidak dapat dihapus!';
+// Cek apakah user yang akan dihapus adalah administrator
+if ($user_data['role'] === 'administrator') {
+    $_SESSION['error_message'] = 'User dengan role Administrator tidak dapat dihapus!';
     header('Location: index.php');
     exit;
 }

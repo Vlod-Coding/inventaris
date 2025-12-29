@@ -72,15 +72,15 @@ include '../includes/header.php';
             <div class="card-body">
                 
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped table-datatable">
-                        <thead class="table-light text-center">
-                            <tr>
-                                <th width="5%">No</th>
-                                <th width="15%">Username</th>
-                                <th width="25%">Nama Lengkap</th>
-                                <th width="15%">Role</th>
-                                <th width="20%">Tanggal Dibuat</th>
-                                <th width="20%">Aksi</th>
+                    <table class="table table-hover table-datatable">
+                        <thead class="table-success text-center">
+                            <tr class="text-center">
+                                <th width="5%" class="text-center">No</th>
+                                <th width="15%" class="text-center">Username</th>
+                                <th width="25%" class="text-center">Nama Lengkap</th>
+                                <th width="15%" class="text-center">Role</th>
+                                <th width="20%" class="text-center">Tanggal Dibuat</th>
+                                <th width="20%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,8 +115,14 @@ include '../includes/header.php';
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         
-                                        <?php if ($row['role'] !== 'owner' && $row['id'] != $_SESSION['user_id']): ?>
-                                        <button onclick="confirmDelete(<?= $row['id'] ?>, '<?= $row['username'] ?>')" 
+                                        <?php 
+                                        // Admin tidak bisa hapus sesama admin dan diri sendiri
+                                        // Admin bisa hapus owner dan cs
+                                        $can_delete = ($row['role'] !== 'administrator' && $row['id'] != $_SESSION['user_id']);
+                                        
+                                        if ($can_delete): 
+                                        ?>
+                                        <button type="button" onclick="confirmDelete(<?= $row['id'] ?>, '<?= $row['username'] ?>')" 
                                                 class="btn btn-sm btn-danger"
                                                 title="Hapus User">
                                             <i class="fas fa-trash"></i>
@@ -124,7 +130,7 @@ include '../includes/header.php';
                                         <?php else: ?>
                                         <button class="btn btn-sm btn-secondary" 
                                                 disabled
-                                                title="Tidak dapat dihapus">
+                                                title="<?= $row['id'] == $_SESSION['user_id'] ? 'Tidak dapat menghapus diri sendiri' : 'Tidak dapat menghapus sesama administrator' ?>">
                                             <i class="fas fa-lock"></i>
                                         </button>
                                         <?php endif; ?>
@@ -151,10 +157,21 @@ include '../includes/header.php';
     </div>
 </div>
 
+<?php include '../includes/footer.php'; ?>
+
 <!-- JavaScript untuk konfirmasi delete -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmDelete(userId, username) {
+    // Debug: cek apakah Swal tersedia
+    if (typeof Swal === 'undefined') {
+        console.error('SweetAlert2 not loaded!');
+        // Fallback ke confirm biasa
+        if (confirm('Apakah Anda yakin ingin menghapus user ' + username + '?')) {
+            window.location.href = 'hapus.php?id=' + userId;
+        }
+        return;
+    }
+    
     Swal.fire({
         title: 'Hapus User?',
         html: `Apakah Anda yakin ingin menghapus user <strong>${username}</strong>?<br><small class="text-muted">Tindakan ini tidak dapat dibatalkan!</small>`,
@@ -172,5 +189,3 @@ function confirmDelete(userId, username) {
     });
 }
 </script>
-
-<?php include '../includes/footer.php'; ?>

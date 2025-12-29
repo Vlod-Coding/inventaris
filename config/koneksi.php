@@ -5,26 +5,67 @@
  * ========================================
  * File: config/koneksi.php
  * Fungsi: Koneksi ke database MySQL
- * Support: Local development & Railway production
+ * Support: Local development & Production (InfinityFree/Railway)
  */
 
-// Local development settings
-$db_host = 'localhost';
-$db_user = 'root';
-$db_pass = '';
-$db_name = 'inventaris_db';
-$db_port = 3306;
+// Set timezone ke Indonesia (WIB)
+date_default_timezone_set('Asia/Jakarta');
 
-// Koneksi ke database
-$conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
+// Deteksi environment
+$is_production = (
+    isset($_SERVER['HTTP_HOST']) && 
+    (strpos($_SERVER['HTTP_HOST'], 'infinityfreeapp.com') !== false || 
+     strpos($_SERVER['HTTP_HOST'], 'free.nf') !== false ||
+     strpos($_SERVER['HTTP_HOST'], 'railway.app') !== false ||
+     strpos($_SERVER['HTTP_HOST'], 'up.railway.app') !== false)
+);
+
+if ($is_production) {
+    // ===== PRODUCTION SETTINGS =====
+    // Ganti dengan informasi database dari hosting Anda
+    $db_host = 'sql100.infinityfree.com'; // MySQL hostname
+    $db_user = 'if0_40771316'; // MySQL username
+    $db_pass = 'Bajudit0k0'; // MySQL password
+    $db_name = 'if0_40771316_inventaris'; // Database name
+    
+    // Disable error display di production
+    error_reporting(0);
+    ini_set('display_errors', 0);
+    
+    // Connect without port for InfinityFree
+    $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
+} else {
+    // ===== LOCAL DEVELOPMENT SETTINGS =====
+    $db_host = 'localhost';
+    $db_user = 'root';
+    $db_pass = '';
+    $db_name = 'inventaris_db';
+    $db_port = 3306;
+    
+    // Enable error display di development
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    
+    // Connect with port for localhost
+    $conn = mysqli_connect($db_host, $db_user, $db_pass, $db_name, $db_port);
+}
 
 // Cek koneksi
 if (!$conn) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
+    if ($is_production) {
+        // Log error untuk debugging
+        error_log("Database connection failed: " . mysqli_connect_error());
+        die("Database connection failed. Please try again later.");
+    } else {
+        die("Koneksi database gagal: " . mysqli_connect_error());
+    }
 }
 
 // Set charset
 mysqli_set_charset($conn, "utf8mb4");
+
+// Set MySQL timezone ke WIB (UTC+7)
+mysqli_query($conn, "SET time_zone = '+07:00'");
 
 /**
  * Helper function untuk escape string

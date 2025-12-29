@@ -12,7 +12,15 @@
     <div class="d-flex justify-content-between align-items-center">
         <!-- Left Section: Hamburger + Page Title -->
         <div class="d-flex align-items-center">
-            <!-- Hamburger Menu Button (integrated in navbar) -->
+            <!-- Hamburger Menu Button (integrated in<?php
+// Deteksi base path untuk support localhost dan production
+$base_path = '';
+if (strpos($_SERVER['REQUEST_URI'], '/inventaris/') !== false) {
+    $base_path = '/inventaris';
+}
+?>
+
+<!-- Navbar -->
             <button class="hamburger-btn-navbar me-3" id="hamburgerBtn" aria-label="Toggle Menu">
                 <span></span>
                 <span></span>
@@ -62,12 +70,12 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" href="/inventaris/profile/index.php">
+                        <a class="dropdown-item" href="<?= $base_path ?>/profile/index.php">
                             <i class="fas fa-user me-2"></i>Profile
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="/inventaris/profile/settings.php">
+                        <a class="dropdown-item" href="<?= $base_path ?>/profile/settings.php">
                             <i class="fas fa-cog me-2"></i>Settings
                         </a>
                     </li>

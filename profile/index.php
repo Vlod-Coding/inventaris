@@ -17,6 +17,12 @@ if (!isset($_SESSION['login'])) {
 
 require_once '../config/koneksi.php';
 
+// Deteksi base path untuk support localhost dan production
+$base_path = '';
+if (strpos($_SERVER['REQUEST_URI'], '/inventaris/') !== false) {
+    $base_path = '/inventaris';
+}
+
 // Ambil data user dari database
 $user_id = $_SESSION['user_id'];
 $query = "SELECT * FROM users WHERE id = '$user_id' LIMIT 1";
@@ -26,8 +32,8 @@ $user = mysqli_fetch_assoc($result);
 // Setup page variables
 $page_title = 'Profile';
 $page_icon = 'user';
-$breadcrumb = [
-    ['label' => 'Dashboard', 'url' => '/inventaris/index.php'],
+$breadcrumbs = [
+    ['label' => 'Dashboard', 'url' => $base_path . '/index.php'],
     ['label' => 'Profile']
 ];
 

@@ -7,6 +7,9 @@
  * Fungsi: Helper function untuk log aktivitas user
  */
 
+// Set timezone ke Indonesia (WIB)
+date_default_timezone_set('Asia/Jakarta');
+
 /**
  * Log aktivitas user ke database
  * 

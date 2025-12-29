@@ -1,10 +1,10 @@
 <?php
 /**
  * ========================================
- * PROSES STOK MASUK
+ * PROSES STOK KELUAR - MULTIPLE ITEMS
  * ========================================
- * File: transaksi/proses_masuk.php
- * Fungsi: Memproses transaksi stok masuk (support multiple items)
+ * File: transaksi/proses_keluar_multi.php
+ * Fungsi: Memproses transaksi stok keluar dengan multiple items
  */
 
 session_start();
@@ -14,30 +14,30 @@ require_once '../config/log_helper.php';
 
 // Validasi form sudah disubmit
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-    header('Location: stok_masuk.php');
+    header('Location: stok_keluar_multi.php');
     exit;
 }
 
 // Ambil data common fields
 $tanggal = escape($_POST['tanggal']);
-$supplier = escape($_POST['supplier']);
+$penanggung_jawab = escape($_POST['penanggung_jawab']);
 $items = $_POST['items'] ?? [];
 
 // Validasi common fields
-if (empty($tanggal) || empty($supplier)) {
-    header('Location: stok_masuk.php?status=error&msg=Tanggal dan Supplier wajib diisi!');
+if (empty($tanggal) || empty($penanggung_jawab)) {
+    header('Location: stok_keluar_multi.php?status=error&msg=Tanggal dan Penanggung Jawab wajib diisi!');
     exit;
 }
 
 // Validasi tanggal
 if (strtotime($tanggal) > strtotime(date('Y-m-d'))) {
-    header('Location: stok_masuk.php?status=error&msg=Tanggal tidak boleh melebihi hari ini');
+    header('Location: stok_keluar_multi.php?status=error&msg=Tanggal tidak boleh melebihi hari ini');
     exit;
 }
 
 // Validasi items
 if (empty($items) || count($items) == 0) {
-    header('Location: stok_masuk.php?status=error&msg=Minimal harus ada 1 barang!');
+    header('Location: stok_keluar_multi.php?status=error&msg=Minimal harus ada 1 barang!');
     exit;
 }
 
@@ -60,7 +60,7 @@ foreach ($items as $item) {
     
     // Check duplicate
     if (in_array($barang_id, $barang_ids)) {
-        header('Location: stok_masuk.php?status=error&msg=Tidak boleh ada barang yang sama dalam satu transaksi!');
+        header('Location: stok_keluar_multi.php?status=error&msg=Tidak boleh ada barang yang sama dalam satu transaksi!');
         exit;
     }
     
@@ -74,7 +74,7 @@ foreach ($items as $item) {
 
 // Final check
 if (empty($validated_items)) {
-    header('Location: stok_masuk.php?status=error&msg=Tidak ada barang yang valid!');
+    header('Location: stok_keluar_multi.php?status=error&msg=Tidak ada barang yang valid!');
     exit;
 }
 
@@ -99,24 +99,38 @@ try {
         }
         
         $data_barang = mysqli_fetch_assoc($result_barang);
+        $stok_tersedia = $data_barang['stok'];
         
-        // Insert ke stok_masuk
-        $query_insert = "INSERT INTO stok_masuk 
-                         (batch_id, barang_id, tanggal, jumlah, keterangan, supplier) 
+        // Validasi stok
+        if ($jumlah > $stok_tersedia) {
+            throw new Exception("Stok {$data_barang['nama_barang']} tidak mencukupi. Stok tersedia: $stok_tersedia");
+        }
+        
+        // Insert ke stok_keluar
+        $query_insert = "INSERT INTO stok_keluar 
+                         (batch_id, barang_id, tanggal, jumlah, keterangan, penanggung_jawab) 
                          VALUES 
-                         ('$batch_id', $barang_id, '$tanggal', $jumlah, '$keterangan', '$supplier')";
+                         ('$batch_id', $barang_id, '$tanggal', $jumlah, '$keterangan', '$penanggung_jawab')";
         
         if (!mysqli_query($conn, $query_insert)) {
             throw new Exception('Gagal menyimpan transaksi: ' . mysqli_error($conn));
         }
         
-        // Update stok barang (tambah stok)
-        $query_update = "UPDATE barang SET stok = stok + $jumlah WHERE id = $barang_id";
+        // Update stok barang
+        $query_update = "UPDATE barang SET stok = stok - $jumlah WHERE id = $barang_id";
         
         if (!mysqli_query($conn, $query_update)) {
             throw new Exception('Gagal mengupdate stok: ' . mysqli_error($conn));
         }
         
+        // Validasi stok tidak negatif
+        $cek_stok_akhir = "SELECT stok FROM barang WHERE id = $barang_id";
+        $result_stok = mysqli_query($conn, $cek_stok_akhir);
+        $stok_akhir = mysqli_fetch_assoc($result_stok)['stok'];
+        
+        if ($stok_akhir < 0) {
+            throw new Exception('Error: Stok ' . $data_barang['nama_barang'] . ' menjadi negatif');
+        }
         
         $total_items++;
         $barang_names[] = $data_barang['nama_barang'];
@@ -131,12 +145,12 @@ try {
         $_SESSION['user_id'], 
         $_SESSION['username'], 
         'CREATE', 
-        'STOK_MASUK_MULTI', 
-        "Input stok masuk (batch): $total_items item - $barang_list"
+        'STOK_KELUAR_MULTI', 
+        "Input stok keluar (batch): $total_items item - $barang_list"
     );
     
-    // Redirect ke halaman stok masuk dengan status sukses
-    header('Location: stok_masuk.php?status=success');
+    // Redirect ke surat pengeluaran dengan batch_id
+    header('Location: surat_pengeluaran.php?batch_id=' . urlencode($batch_id));
     exit;
     
 } catch (Exception $e) {
@@ -144,7 +158,7 @@ try {
     mysqli_rollback($conn);
     
     // Redirect dengan pesan error
-    header('Location: stok_masuk.php?status=error&msg=' . urlencode($e->getMessage())); // Changed stok_keluar_multi to stok_masuk
+    header('Location: stok_keluar_multi.php?status=error&msg=' . urlencode($e->getMessage()));
     exit;
 }
 ?>

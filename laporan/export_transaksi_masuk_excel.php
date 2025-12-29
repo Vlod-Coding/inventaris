@@ -102,38 +102,27 @@ header("Expires: 0");
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <table style="border: 1px solid #000; width: 100%; margin-bottom: 10px;">
+    <!-- Header Section with Merged Cells -->
+    <table style="border: none; width: 100%; margin-bottom: 20px;">
+        <!-- Company Name -->
         <tr>
-            <td style="width: 70%; vertical-align: top; padding: 10px;">
-                <div class="company-info">
-                    <strong style="font-size: 14pt;">SISTEM INVENTARIS</strong><br>
-                    Jl. Contoh Alamat No.123<br>
-                    Kota, Provinsi 12345<br>
-                    Phone: 0123-456789<br>
-                    Email: info@inventaris.com
-                </div>
+            <td colspan="9" style="border: 1px solid #000; text-align: center; padding: 15px; background-color: #f8f9fa;">
+                <strong style="font-size: 16pt;">SISTEM INVENTARIS</strong>
             </td>
-            <td style="width: 30%; text-align: center; vertical-align: middle; padding: 10px;">
-                <strong style="font-size: 12pt;">LAPORAN TRANSAKSI MASUK</strong><br>
-                <small>Tanggal Cetak:</small><br>
-                <?= date('d/m/Y H:i') ?> WIB
+        </tr>
+        <!-- Report Title -->
+        <tr>
+            <td colspan="9" style="border: 1px solid #000; text-align: center; padding: 12px; background-color: #d4edda;">
+                <strong style="font-size: 14pt;">Laporan Transaksi Stok Masuk</strong>
+            </td>
+        </tr>
+        <!-- Period/Date -->
+        <tr>
+            <td colspan="9" style="border: 1px solid #000; text-align: center; padding: 10px;">
+                <strong>Periode:</strong> <?= tgl_indo($tanggal_awal) ?> s/d <?= tgl_indo($tanggal_akhir) ?>
             </td>
         </tr>
     </table>
-
-    <!-- Report Title -->
-    <div class="report-title">
-        LAPORAN TRANSAKSI STOK MASUK
-    </div>
-
-    <!-- Report Info -->
-    <div class="info-row">
-        <span class="info-label">Dicetak oleh:</span> <?= $_SESSION['nama_lengkap'] ?>
-    </div>
-    <div class="info-row">
-        <span class="info-label">Tanggal Laporan:</span> <?= tgl_indo($tanggal_awal) ?> s/d <?= tgl_indo($tanggal_akhir) ?>
-    </div>
     
     <!-- Data Table -->
     <table>
