@@ -29,6 +29,9 @@ $result = mysqli_query($conn, $query);
 
 // Cek apakah ada pesan notifikasi
 $notif = '';
+$show_cascade_popup = false;
+$cascade_data = null;
+
 if (isset($_GET['status'])) {
     if ($_GET['status'] == 'success_add') {
         $notif = alert('success', '<i class="fas fa-check-circle me-2"></i>Data barang berhasil ditambahkan!');
@@ -38,6 +41,9 @@ if (isset($_GET['status'])) {
         $notif = alert('success', '<i class="fas fa-check-circle me-2"></i>Data barang berhasil dihapus!');
     } elseif ($_GET['status'] == 'error') {
         $notif = alert('danger', '<i class="fas fa-times-circle me-2"></i>Terjadi kesalahan! ' . ($_GET['msg'] ?? ''));
+    } elseif ($_GET['status'] == 'has_transaction' && isset($_GET['data'])) {
+        $show_cascade_popup = true;
+        $cascade_data = json_decode(urldecode($_GET['data']), true);
     }
 }
 
@@ -238,7 +244,68 @@ include '../includes/header.php';
     // Initialize table search and sort
     document.addEventListener('DOMContentLoaded', function() {
         initTable('tableBarang', 'searchBarang');
+        
+        <?php if ($show_cascade_popup && $cascade_data): ?>
+        // Show cascade delete confirmation popup
+        showCascadeDeletePopup(<?= json_encode($cascade_data) ?>);
+        <?php endif; ?>
     });
+    
+    function showCascadeDeletePopup(data) {
+        Swal.fire({
+            title: '<i class="fas fa-exclamation-triangle text-warning"></i> Peringatan!',
+            html: `
+                <div class="text-start">
+                    <p class="mb-3"><strong>Barang yang akan dihapus:</strong></p>
+                    <ul class="list-unstyled mb-3">
+                        <li><i class="fas fa-barcode me-2"></i><strong>Kode:</strong> ${data.kode}</li>
+                        <li><i class="fas fa-box me-2"></i><strong>Nama:</strong> ${data.nama}</li>
+                    </ul>
+                    
+                    <div class="alert alert-danger mb-3">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Barang ini memiliki ${data.total_transaksi} riwayat transaksi:</strong>
+                        <ul class="mt-2 mb-0">
+                            <li>${data.total_masuk} transaksi stok masuk</li>
+                            <li>${data.total_keluar} transaksi stok keluar</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="text-danger mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Jika Anda melanjutkan, SEMUA riwayat transaksi akan ikut terhapus permanen!</strong>
+                    </p>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="confirmCascadeDelete">
+                        <label class="form-check-label" for="confirmCascadeDelete">
+                            <strong>Saya mengerti dan yakin ingin menghapus barang beserta semua riwayat transaksinya</strong>
+                        </label>
+                    </div>
+                </div>
+            `,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="fas fa-trash me-2"></i>Ya, Hapus Semua!',
+            cancelButtonText: '<i class="fas fa-times me-2"></i>Batal',
+            width: '600px',
+            preConfirm: () => {
+                const checkbox = document.getElementById('confirmCascadeDelete');
+                if (!checkbox.checked) {
+                    Swal.showValidationMessage('Anda harus mencentang checkbox konfirmasi!');
+                    return false;
+                }
+                return true;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect ke hapus.php dengan parameter force=1
+                window.location.href = 'hapus.php?id=' + data.id + '&force=1';
+            }
+        });
+    }
 </script>
 
 <?php include '../includes/footer.php'; ?>

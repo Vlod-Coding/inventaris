@@ -104,43 +104,27 @@ header("Expires: 0");
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <div class="header-section">
-        <table style="border: none; width: 100%;">
-            <tr style="border: none;">
-                <td style="border: none; width: 70%; vertical-align: top;">
-                    <div class="company-info">
-                        <strong style="font-size: 14pt;">SISTEM INVENTARIS</strong><br>
-                        Jl. Contoh Alamat No.123<br>
-                        Kota, Provinsi 12345<br>
-                        Phone: 0123-456789<br>
-                        Email: info@inventaris.com
-                    </div>
-                </td>
-                <td style="border: none; width: 30%; text-align: right; vertical-align: top;">
-                    <div style="border: 2px solid #2c3e50; padding: 10px; background-color: #f0f0f0;">
-                        <strong>LAPORAN STOK</strong><br>
-                        <small>Tanggal Cetak:</small><br>
-                        <?= date('d/m/Y H:i') ?> WIB
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Report Title -->
-    <div class="report-title">
-        LAPORAN STOK BARANG
-    </div>
-
-    <!-- Report Info -->
-    <div class="info-box">
-        <?php if (!empty($filter_kategori)): ?>
-            <span class="info-label">Kategori:</span> <?= $filter_kategori ?><br>
-        <?php endif; ?>
-        <span class="info-label">Dicetak oleh:</span> <?= $_SESSION['nama_lengkap'] ?><br>
-        <span class="info-label">Tanggal Laporan:</span> <?= date('d F Y') ?>
-    </div>
+    <!-- Header Section with Merged Cells -->
+    <table style="border: none; width: 100%; margin-bottom: 20px;">
+        <!-- Company Name -->
+        <tr>
+            <td colspan="7" style="border: 1px solid #000; text-align: center; padding: 15px; background-color: #f8f9fa;">
+                <strong style="font-size: 16pt;">SISTEM INVENTARIS</strong>
+            </td>
+        </tr>
+        <!-- Report Title -->
+        <tr>
+            <td colspan="7" style="border: 1px solid #000; text-align: center; padding: 12px; background-color: #e9ecef;">
+                <strong style="font-size: 14pt;">Laporan Stok Barang</strong>
+            </td>
+        </tr>
+        <!-- Period/Date -->
+        <tr>
+            <td colspan="7" style="border: 1px solid #000; text-align: center; padding: 10px;">
+                <strong>Periode:</strong> <?= date('d F Y') ?>
+            </td>
+        </tr>
+    </table>
     
     <!-- Data Table -->
     <table>

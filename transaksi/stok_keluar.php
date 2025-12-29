@@ -4,7 +4,7 @@
  * TRANSAKSI STOK KELUAR
  * ========================================
  * File: transaksi/stok_keluar.php
- * Fungsi: Form input stok keluar dan history transaksi
+ * Fungsi: Form input stok keluar dengan multiple items
  */
 
 session_start();
@@ -12,7 +12,7 @@ require_once '../config/koneksi.php';
 require_once '../config/cek_session.php';
 require_once '../config/permissions.php';
 
-// Check if user can access this page (CS and Admin only)
+// Check if user can access this page
 check_page_access('transaksi');
 
 // Set variabel untuk template
@@ -30,13 +30,11 @@ $query_barang = "SELECT id, kode_barang, nama_barang, satuan, stok
                  ORDER BY nama_barang ASC";
 $result_barang = mysqli_query($conn, $query_barang);
 
-// Query untuk history stok keluar (10 terakhir)
-$query_history = "SELECT sk.*, b.kode_barang, b.nama_barang, b.satuan
-                  FROM stok_keluar sk
-                  JOIN barang b ON sk.barang_id = b.id
-                  ORDER BY sk.created_at DESC
-                  LIMIT 10";
-$result_history = mysqli_query($conn, $query_history);
+// Convert to array for JavaScript
+$barang_list = [];
+while ($row = mysqli_fetch_assoc($result_barang)) {
+    $barang_list[] = $row;
+}
 
 // Cek notifikasi
 $notif = '';
@@ -66,314 +64,300 @@ include '../includes/header.php';
         <!-- Notifikasi -->
         <?= $notif ?>
         
-        <div class="row">
-            <!-- Form Stok Keluar -->
-            <div class="col-lg-5 mb-4">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">
-                        <i class="fas fa-arrow-up me-2"></i>
-                        Form Transaksi Stok Keluar
-                    </div>
-                    <div class="card-body">
-                        <form action="proses_keluar.php" method="POST" id="formStokKeluar">
-                            
-                            <!-- Tanggal -->
-                            <div class="mb-3">
-                                <label for="tanggal" class="form-label">
-                                    Tanggal <span class="text-danger">*</span>
-                                </label>
-                                <input type="date" 
-                                       class="form-control" 
-                                       id="tanggal" 
-                                       name="tanggal" 
-                                       value="<?= date('Y-m-d') ?>"
-                                       max="<?= date('Y-m-d') ?>"
-                                       required>
-                            </div>
-                            
-                            <!-- Pilih Barang -->
-                            <div class="mb-3">
-                                <label for="barang_id" class="form-label">
-                                    Pilih Barang <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-select" 
-                                        id="barang_id" 
-                                        name="barang_id" 
-                                        required
-                                        onchange="updateInfoBarang()">
-                                    <option value="">-- Pilih Barang --</option>
-                                    <?php 
-                                    if (mysqli_num_rows($result_barang) > 0):
-                                        while ($row = mysqli_fetch_assoc($result_barang)): 
-                                    ?>
-                                        <option value="<?= $row['id'] ?>" 
-                                                data-kode="<?= $row['kode_barang'] ?>"
-                                                data-nama="<?= $row['nama_barang'] ?>"
-                                                data-satuan="<?= $row['satuan'] ?>"
-                                                data-stok="<?= $row['stok'] ?>">
-                                            [<?= $row['kode_barang'] ?>] <?= $row['nama_barang'] ?> 
-                                            (Stok: <?= number_format($row['stok']) ?> <?= $row['satuan'] ?>)
-                                        </option>
-                                    <?php 
-                                        endwhile;
-                                    endif;
-                                    ?>
-                                </select>
-                                <?php if (mysqli_num_rows($result_barang) == 0): ?>
-                                    <small class="text-danger">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        Tidak ada barang dengan stok tersedia
-                                    </small>
-                                <?php endif; ?>
-                            </div>
-                            
-                            <!-- Info Barang Terpilih -->
-                            <div id="infoBarang" class="alert alert-info d-none mb-3">
-                                <strong>Info Barang:</strong><br>
-                                <span id="displayKode"></span><br>
-                                <span id="displayNama"></span><br>
-                                <span id="displayStok"></span>
-                                <input type="hidden" id="stok_tersedia" value="0">
-                            </div>
-                            
-                            <!-- Jumlah Keluar -->
-                            <div class="mb-3">
-                                <label for="jumlah" class="form-label">
-                                    Jumlah Keluar <span class="text-danger">*</span>
-                                </label>
-                                <input type="number" 
-                                       class="form-control" 
-                                       id="jumlah" 
-                                       name="jumlah" 
-                                       placeholder="Masukkan jumlah stok yang keluar"
-                                       min="1"
-                                       required
-                                       onkeyup="validasiStok()">
-                                <small id="warningStok" class="text-danger d-none">
-                                    <i class="fas fa-exclamation-triangle me-1"></i>
-                                    Jumlah melebihi stok tersedia!
-                                </small>
-                                <small class="text-muted d-block mt-1">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Stok akan otomatis berkurang
-                                </small>
-                            </div>
-                            
-                            <!-- Keterangan -->
-                            <div class="mb-3">
-                                <label for="keterangan" class="form-label">
-                                    Keterangan
-                                </label>
-                                <textarea class="form-control" 
-                                          id="keterangan" 
-                                          name="keterangan" 
-                                          rows="2"
-                                          placeholder="Keterangan penggunaan barang (opsional)"></textarea>
-                            </div>
-                            
-                            <!-- Penanggung Jawab -->
-                            <div class="mb-3">
-                                <label for="penanggung_jawab" class="form-label">
-                                    Penanggung Jawab <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="penanggung_jawab" 
-                                       name="penanggung_jawab" 
-                                       placeholder="Nama penanggung jawab / yang mengambil barang"
-                                       required>
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Wajib diisi untuk tracking barang yang diambil
-                                </small>
-                            </div>
-                            
-                            <hr>
-                            
-                            <!-- Tombol Aksi -->
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-danger" id="btnSubmit">
-                                    <i class="fas fa-save me-2"></i>Simpan Transaksi
-                                </button>
-                                <button type="reset" class="btn btn-secondary" onclick="resetForm()">
-                                    <i class="fas fa-redo me-2"></i>Reset
-                                </button>
-                            </div>
-                            
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- Info Box -->
-                <div class="card mt-3">
-                    <div class="card-header bg-warning text-white">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Perhatian
-                    </div>
-                    <div class="card-body">
-                        <ul class="mb-0">
-                            <li>Stok akan otomatis berkurang setelah transaksi disimpan</li>
-                            <li>Jumlah keluar tidak boleh melebihi stok tersedia</li>
-                            <li>Pastikan memilih barang yang tepat</li>
-                            <li>Transaksi tidak dapat dibatalkan</li>
-                        </ul>
-                    </div>
-                </div>
+        <!-- Form Stok Keluar Multi Item -->
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-arrow-up me-2"></i>
+                Form Transaksi Stok Keluar
             </div>
-            
-            <!-- History Stok Keluar -->
-            <div class="col-lg-7 mb-4">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">
-                        <i class="fas fa-history me-2"></i>
-                        History Transaksi Stok Keluar (10 Terakhir)
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead class="table-light">
-                                    <tr class="text-center">
-                                        <th width="5%">No</th>
-                                        <th width="10%">Tanggal</th>
-                                        <th width="12%">Kode</th>
-                                        <th width="20%">Nama Barang</th>
-                                        <th width="10%" class="text-center">Jumlah</th>
-                                        <th width="18%">Penanggung Jawab</th>
-                                        <th width="25%">Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php 
-                                    if (mysqli_num_rows($result_history) > 0):
-                                        $no = 1;
-                                        while ($row = mysqli_fetch_assoc($result_history)): 
-                                    ?>
-                                        <tr class="text-center">
-                                            <td><?= $no++ ?></td>
-                                            <td><?= date('d/m/Y', strtotime($row['tanggal'])) ?></td>
-                                            <td><strong><?= $row['kode_barang'] ?></strong></td>
-                                            <td><?= $row['nama_barang'] ?></td>
-                                            <td class="text-center">
-                                                <span class="badge bg-danger">
-                                                    -<?= number_format($row['jumlah']) ?> <?= $row['satuan'] ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <?= !empty($row['penanggung_jawab']) ? $row['penanggung_jawab'] : '<span class="text-muted">-</span>' ?>
-                                            </td>
-                                            <td>
-                                                <?= $row['keterangan'] ? $row['keterangan'] : '<span class="text-muted">-</span>' ?>
-                                            </td>
-                                        </tr>
-                                    <?php 
-                                        endwhile;
-                                    else:
-                                    ?>
-                                        <tr>
-                                            <td colspan="7" class="text-center text-muted">
-                                                <i class="fas fa-inbox fa-3x mb-2"></i><br>
-                                                Belum ada transaksi stok keluar
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+            <div class="card-body">
+                <form action="proses_keluar.php" method="POST" id="formStokKeluar">
+                    
+                    <!-- Common Fields -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="tanggal" class="form-label">
+                                Tanggal <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="tanggal" 
+                                   name="tanggal" 
+                                   value="<?= date('Y-m-d') ?>"
+                                   max="<?= date('Y-m-d') ?>"
+                                   required>
                         </div>
                         
-                        <!-- Link ke Laporan Lengkap -->
-                        <div class="text-end mt-3">
-                            <a href="../laporan/transaksi_keluar.php" class="btn btn-sm btn-outline-danger">
-                                <i class="fas fa-file-alt me-2"></i>Lihat Laporan Lengkap
-                            </a>
+                        <div class="col-md-6">
+                            <label for="penanggung_jawab" class="form-label">
+                                Penanggung Jawab <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="penanggung_jawab" 
+                                   name="penanggung_jawab" 
+                                   placeholder="Nama penanggung jawab / yang mengambil barang"
+                                   required>
                         </div>
                     </div>
-                </div>
+                    
+                    <hr>
+                    
+                    <!-- Dynamic Item Rows -->
+                    <div id="itemsContainer">
+                        <!-- Item rows will be added here -->
+                    </div>
+                    
+                    <!-- Add Item Button -->
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-outline-success" onclick="addItemRow()">
+                            <i class="fas fa-plus me-2"></i>Tambah Barang
+                        </button>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Submit Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger" id="btnSubmit">
+                            <i class="fas fa-save me-2"></i>Simpan Transaksi
+                        </button>
+                        <button type="reset" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-redo me-2"></i>Reset
+                        </button>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+        
+        <!-- Info Box -->
+        <div class="card mt-3">
+            <div class="card-header bg-warning text-white">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Perhatian
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Anda dapat menambahkan multiple barang dalam satu transaksi</li>
+                    <li>Stok akan otomatis berkurang setelah transaksi disimpan</li>
+                    <li>Jumlah keluar tidak boleh melebihi stok tersedia</li>
+                    <li>Tidak boleh ada barang yang sama dalam satu transaksi</li>
+                    <li>Transaksi tidak dapat dibatalkan</li>
+                </ul>
             </div>
         </div>
         
     </div>
 </div>
 
+<!-- Item Row Template (Hidden) -->
+<template id="itemRowTemplate">
+    <div class="item-row card mb-3">
+        <div class="card-body">
+            <div class="row align-items-start">
+                <div class="col-md-4">
+                    <label class="form-label">Pilih Barang <span class="text-danger">*</span></label>
+                    <select class="form-select barang-select" name="items[{INDEX}][barang_id]" required onchange="updateStokInfo(this, {INDEX})">
+                        <option value="">-- Pilih Barang --</option>
+                        <?php foreach ($barang_list as $barang): ?>
+                            <option value="<?= $barang['id'] ?>" 
+                                    data-kode="<?= $barang['kode_barang'] ?>"
+                                    data-nama="<?= $barang['nama_barang'] ?>"
+                                    data-satuan="<?= $barang['satuan'] ?>"
+                                    data-stok="<?= $barang['stok'] ?>">
+                                [<?= $barang['kode_barang'] ?>] <?= $barang['nama_barang'] ?> 
+                                (Stok: <?= number_format($barang['stok']) ?> <?= $barang['satuan'] ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <small class="stok-info text-muted d-block" style="min-height: 20px;">&nbsp;</small>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Jumlah <span class="text-danger">*</span></label>
+                    <input type="number" 
+                           class="form-control jumlah-input" 
+                           name="items[{INDEX}][jumlah]" 
+                           placeholder="Jumlah"
+                           min="1"
+                           required
+                           onkeyup="validateStok(this, {INDEX})">
+                    <small class="warning-stok text-danger d-none" style="min-height: 20px;">
+                        <i class="fas fa-exclamation-triangle"></i> Melebihi stok!
+                    </small>
+                    <small class="d-block" style="min-height: 20px;">&nbsp;</small>
+                </div>
+                
+                <div class="col-md-4">
+                    <label class="form-label">Keterangan</label>
+                    <input type="text" 
+                           class="form-control" 
+                           name="items[{INDEX}][keterangan]" 
+                           placeholder="Keterangan (opsional)">
+                    <small class="d-block" style="min-height: 20px;">&nbsp;</small>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" class="btn btn-danger btn-sm w-100" onclick="removeItemRow(this)">
+                        <i class="fas fa-trash"></i> Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
 <!-- JavaScript -->
 <script>
-function updateInfoBarang() {
-    const select = document.getElementById('barang_id');
+// Barang data for validation
+const barangData = <?= json_encode($barang_list) ?>;
+let itemIndex = 0;
+
+// Add first row on page load
+document.addEventListener('DOMContentLoaded', function() {
+    addItemRow();
+});
+
+function addItemRow() {
+    const template = document.getElementById('itemRowTemplate');
+    const container = document.getElementById('itemsContainer');
+    
+    // Clone template
+    const clone = template.content.cloneNode(true);
+    
+    // Replace {INDEX} with actual index
+    const html = clone.querySelector('.item-row').outerHTML.replace(/{INDEX}/g, itemIndex);
+    
+    // Add to container
+    container.insertAdjacentHTML('beforeend', html);
+    
+    itemIndex++;
+}
+
+function removeItemRow(button) {
+    const itemRow = button.closest('.item-row');
+    const container = document.getElementById('itemsContainer');
+    
+    // Don't allow removing if only one item left
+    if (container.querySelectorAll('.item-row').length <= 1) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Tidak Bisa Dihapus',
+            text: 'Minimal harus ada 1 barang dalam transaksi!'
+        });
+        return;
+    }
+    
+    itemRow.remove();
+}
+
+function updateStokInfo(select, index) {
     const option = select.options[select.selectedIndex];
-    const infoBox = document.getElementById('infoBarang');
+    const stokInfo = select.closest('.item-row').querySelector('.stok-info');
     
     if (option.value) {
-        // Ambil data dari atribut option
-        const kode = option.getAttribute('data-kode');
-        const nama = option.getAttribute('data-nama');
-        const satuan = option.getAttribute('data-satuan');
         const stok = option.getAttribute('data-stok');
+        const satuan = option.getAttribute('data-satuan');
+        stokInfo.textContent = `Stok tersedia: ${Number(stok).toLocaleString()} ${satuan}`;
+        stokInfo.setAttribute('data-stok', stok);
         
-        // Update info
-        document.getElementById('displayKode').textContent = 'Kode: ' + kode;
-        document.getElementById('displayNama').textContent = 'Nama: ' + nama;
-        document.getElementById('displayStok').textContent = 'Stok Tersedia: ' + 
-            Number(stok).toLocaleString() + ' ' + satuan;
-        
-        // Simpan stok tersedia
-        document.getElementById('stok_tersedia').value = stok;
-        
-        // Tampilkan info box
-        infoBox.classList.remove('d-none');
-        
-        // Reset jumlah input
-        document.getElementById('jumlah').value = '';
-        document.getElementById('warningStok').classList.add('d-none');
+        // Check for duplicates
+        checkDuplicateBarang();
     } else {
-        // Sembunyikan info box
-        infoBox.classList.add('d-none');
-        document.getElementById('stok_tersedia').value = 0;
+        stokInfo.textContent = '';
+        stokInfo.setAttribute('data-stok', '0');
     }
 }
 
-function validasiStok() {
-    const stokTersedia = parseInt(document.getElementById('stok_tersedia').value);
-    const jumlahKeluar = parseInt(document.getElementById('jumlah').value) || 0;
-    const warningStok = document.getElementById('warningStok');
-    const btnSubmit = document.getElementById('btnSubmit');
+function validateStok(input, index) {
+    const itemRow = input.closest('.item-row');
+    const stokInfo = itemRow.querySelector('.stok-info');
+    const warningStok = itemRow.querySelector('.warning-stok');
+    const stokTersedia = parseInt(stokInfo.getAttribute('data-stok')) || 0;
+    const jumlah = parseInt(input.value) || 0;
     
-    if (jumlahKeluar > stokTersedia) {
-        // Jumlah melebihi stok
+    if (jumlah > stokTersedia) {
         warningStok.classList.remove('d-none');
-        btnSubmit.disabled = true;
+        input.classList.add('is-invalid');
     } else {
-        // Jumlah valid
         warningStok.classList.add('d-none');
-        btnSubmit.disabled = false;
+        input.classList.remove('is-invalid');
     }
+}
+
+function checkDuplicateBarang() {
+    const selects = document.querySelectorAll('.barang-select');
+    const selectedIds = [];
+    let hasDuplicate = false;
+    
+    selects.forEach(select => {
+        const value = select.value;
+        if (value) {
+            if (selectedIds.includes(value)) {
+                select.classList.add('is-invalid');
+                hasDuplicate = true;
+            } else {
+                select.classList.remove('is-invalid');
+                selectedIds.push(value);
+            }
+        }
+    });
+    
+    if (hasDuplicate) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Barang Duplikat',
+            text: 'Tidak boleh memilih barang yang sama dalam satu transaksi!'
+        });
+    }
+    
+    return hasDuplicate;
 }
 
 function resetForm() {
-    document.getElementById('infoBarang').classList.add('d-none');
-    document.getElementById('warningStok').classList.add('d-none');
-    document.getElementById('btnSubmit').disabled = false;
+    document.getElementById('itemsContainer').innerHTML = '';
+    itemIndex = 0;
+    addItemRow();
 }
 
-// Validasi form saat submit
+// Form validation before submit
 document.getElementById('formStokKeluar').addEventListener('submit', function(e) {
-    const stokTersedia = parseInt(document.getElementById('stok_tersedia').value);
-    const jumlahKeluar = parseInt(document.getElementById('jumlah').value);
-    
-    if (jumlahKeluar <= 0) {
+    // Check for duplicates
+    if (checkDuplicateBarang()) {
         e.preventDefault();
-        Swal.fire({
-            icon: 'error',
-            title: 'Jumlah Tidak Valid',
-            text: 'Jumlah stok keluar harus lebih dari 0!',
-        });
         return false;
     }
     
-    if (jumlahKeluar > stokTersedia) {
+    // Check stok validation
+    const jumlahInputs = document.querySelectorAll('.jumlah-input');
+    let hasInvalidStok = false;
+    
+    jumlahInputs.forEach(input => {
+        if (input.classList.contains('is-invalid')) {
+            hasInvalidStok = true;
+        }
+    });
+    
+    if (hasInvalidStok) {
         e.preventDefault();
         Swal.fire({
             icon: 'error',
             title: 'Stok Tidak Mencukupi',
-            text: 'Jumlah keluar melebihi stok yang tersedia!',
+            text: 'Ada barang dengan jumlah yang melebihi stok tersedia!'
+        });
+        return false;
+    }
+    
+    // Check if at least one item
+    const itemRows = document.querySelectorAll('.item-row');
+    if (itemRows.length === 0) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Tidak Ada Barang',
+            text: 'Minimal harus ada 1 barang dalam transaksi!'
         });
         return false;
     }

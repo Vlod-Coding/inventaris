@@ -321,6 +321,19 @@ include '../includes/header.php';
         width: 100% !important;
     }
     
+    /* Force print background colors for badges */
+    .badge {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    .bg-success, .bg-warning, .bg-danger {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
     /* Page settings */
     @page {
         margin: 1cm;

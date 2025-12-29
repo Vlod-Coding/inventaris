@@ -1,10 +1,10 @@
 <?php
 /**
  * ========================================
- * TRANSAKSI STOK MASUK
+ * TRANSAKSI STOK KELUAR - MULTIPLE ITEMS
  * ========================================
- * File: transaksi/stok_masuk.php
- * Fungsi: Form input stok masuk dengan multiple items
+ * File: transaksi/stok_keluar_multi.php
+ * Fungsi: Form input stok keluar dengan multiple items
  */
 
 session_start();
@@ -16,16 +16,17 @@ require_once '../config/permissions.php';
 check_page_access('transaksi');
 
 // Set variabel untuk template
-$page_title = 'Stok Masuk';
-$page_icon = 'arrow-down';
+$page_title = 'Stok Keluar (Multi Item)';
+$page_icon = 'arrow-up';
 $breadcrumb = [
     ['label' => 'Dashboard', 'url' => '../index.php'],
-    ['label' => 'Stok Masuk']
+    ['label' => 'Stok Keluar (Multi Item)']
 ];
 
-// Query untuk mengambil daftar barang (semua barang, tidak perlu cek stok)
+// Query untuk mengambil daftar barang yang masih ada stoknya
 $query_barang = "SELECT id, kode_barang, nama_barang, satuan, stok 
                  FROM barang 
+                 WHERE stok > 0
                  ORDER BY nama_barang ASC";
 $result_barang = mysqli_query($conn, $query_barang);
 
@@ -39,7 +40,7 @@ while ($row = mysqli_fetch_assoc($result_barang)) {
 $notif = '';
 if (isset($_GET['status'])) {
     if ($_GET['status'] == 'success') {
-        $notif = alert('success', '<i class="fas fa-check-circle me-2"></i>Transaksi stok masuk berhasil disimpan!');
+        $notif = alert('success', '<i class="fas fa-check-circle me-2"></i>Transaksi stok keluar berhasil disimpan!');
     } elseif ($_GET['status'] == 'error') {
         $notif = alert('danger', '<i class="fas fa-times-circle me-2"></i>Terjadi kesalahan: ' . ($_GET['msg'] ?? ''));
     }
@@ -65,12 +66,12 @@ include '../includes/header.php';
         
         <!-- Form Stok Keluar Multi Item -->
         <div class="card">
-            <div class="card-header bg-success text-white">
-                <i class="fas fa-arrow-down me-2"></i>
-                Form Transaksi Stok Masuk
+            <div class="card-header bg-danger text-white">
+                <i class="fas fa-arrow-up me-2"></i>
+                Form Transaksi Stok Keluar (Multiple Items)
             </div>
             <div class="card-body">
-                <form action="proses_masuk.php" method="POST" id="formStokMasuk">
+                <form action="proses_keluar_multi.php" method="POST" id="formStokKeluar">
                     
                     <!-- Common Fields -->
                     <div class="row mb-4">
@@ -88,14 +89,14 @@ include '../includes/header.php';
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="supplier" class="form-label">
-                                Supplier <span class="text-danger">*</span>
+                            <label for="penanggung_jawab" class="form-label">
+                                Penanggung Jawab <span class="text-danger">*</span>
                             </label>
                             <input type="text" 
                                    class="form-control" 
-                                   id="supplier" 
-                                   name="supplier" 
-                                   placeholder="Nama supplier / sumber barang"
+                                   id="penanggung_jawab" 
+                                   name="penanggung_jawab" 
+                                   placeholder="Nama penanggung jawab / yang mengambil barang"
                                    required>
                         </div>
                     </div>
@@ -118,12 +119,15 @@ include '../includes/header.php';
                     
                     <!-- Submit Buttons -->
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-success" id="btnSubmit">
+                        <button type="submit" class="btn btn-danger" id="btnSubmit">
                             <i class="fas fa-save me-2"></i>Simpan Transaksi
                         </button>
                         <button type="reset" class="btn btn-secondary" onclick="resetForm()">
                             <i class="fas fa-redo me-2"></i>Reset
                         </button>
+                        <a href="stok_keluar.php" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali ke Form Single Item
+                        </a>
                     </div>
                     
                 </form>
@@ -132,15 +136,15 @@ include '../includes/header.php';
         
         <!-- Info Box -->
         <div class="card mt-3">
-            <div class="card-header bg-info text-white">
-                <i class="fas fa-info-circle me-2"></i>
-                Informasi
+            <div class="card-header bg-warning text-white">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Perhatian
             </div>
             <div class="card-body">
                 <ul class="mb-0">
                     <li>Anda dapat menambahkan multiple barang dalam satu transaksi</li>
-                    <li>Stok akan otomatis bertambah setelah transaksi disimpan</li>
-                    <li>Barang baru akan otomatis ditambahkan jika belum ada</li>
+                    <li>Stok akan otomatis berkurang setelah transaksi disimpan</li>
+                    <li>Jumlah keluar tidak boleh melebihi stok tersedia</li>
                     <li>Tidak boleh ada barang yang sama dalam satu transaksi</li>
                     <li>Transaksi tidak dapat dibatalkan</li>
                 </ul>
@@ -181,7 +185,10 @@ include '../includes/header.php';
                            placeholder="Jumlah"
                            min="1"
                            required
-                           onkeyup="checkDuplicateBarang()">
+                           onkeyup="validateStok(this, {INDEX})">
+                    <small class="warning-stok text-danger d-none" style="min-height: 20px;">
+                        <i class="fas fa-exclamation-triangle"></i> Melebihi stok!
+                    </small>
                     <small class="d-block" style="min-height: 20px;">&nbsp;</small>
                 </div>
                 
@@ -319,10 +326,30 @@ function resetForm() {
 }
 
 // Form validation before submit
-document.getElementById('formStokMasuk').addEventListener('submit', function(e) {
+document.getElementById('formStokKeluar').addEventListener('submit', function(e) {
     // Check for duplicates
     if (checkDuplicateBarang()) {
         e.preventDefault();
+        return false;
+    }
+    
+    // Check stok validation
+    const jumlahInputs = document.querySelectorAll('.jumlah-input');
+    let hasInvalidStok = false;
+    
+    jumlahInputs.forEach(input => {
+        if (input.classList.contains('is-invalid')) {
+            hasInvalidStok = true;
+        }
+    });
+    
+    if (hasInvalidStok) {
+        e.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Stok Tidak Mencukupi',
+            text: 'Ada barang dengan jumlah yang melebihi stok tersedia!'
+        });
         return false;
     }
     
