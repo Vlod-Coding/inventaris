@@ -11,7 +11,7 @@
 [![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-purple.svg)](https://getbootstrap.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[Demo](#-demo) • [Fitur](#-fitur-utama) • [Instalasi](#-instalasi) • [Dokumentasi](#-dokumentasi)
+[Demo](https://inventaris-rpl.free.nf/) • [Fitur](#-fitur-utama) • [Instalasi](#-instalasi) • [Dokumentasi](#-dokumentasi)
 
 </div>
 
